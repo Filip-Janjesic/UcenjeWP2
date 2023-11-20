@@ -51,32 +51,6 @@ create table narudzbe(
 	
 );
 
-create table kategorije(
-
-	sifra int not null primary key identity(1,1),
-	naziv varchar(50)
-
-);
-
-create table komentari(
-
-	sifra int not null primary key identity(1,1),
-	korisnik int,
-	proizvod int,
-	komentar text,
-	komentar_datum date,
-	odobreno varchar(100)
-
-);
-
-create table ocjene(
-
-	korisnik int,
-	proizvod int,
-	ocjena int
-
-);
-
 create table kupljeno(
 
 	narudzbe int,
@@ -87,12 +61,4 @@ create table kupljeno(
 
 alter table kupljeno add foreign key (narudzbe) references narudzbe(sifra);
 alter table kupljeno add foreign key (proizvod) references proizvodi(sifra);
-
-alter table proizvodi add foreign key (kategorija) references kategorije(sifra);
 alter table narudzbe add foreign key (korisnik) references korisnici(sifra);
-
-alter table komentari add foreign key (proizvod) references proizvodi(sifra);
-alter table komentari add foreign key (korisnik) references korisnici(sifra);
-
-alter table ocjene add foreign key (proizvod) references proizvodi(sifra);
-alter table ocjene add foreign key (korisnik) references korisnici(sifra);
