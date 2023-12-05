@@ -52,8 +52,8 @@ create table kupljeno(
 
 	narudzbe int not null,
 	proizvod int not null,
-	cijena decimal(18,2)
-	kolicina varchar(50) not null,
+	cijena decimal(18,2),
+	kolicina varchar(50)
 
 );
 
@@ -69,7 +69,7 @@ VALUES
 
 INSERT INTO korisnici (ime, prezime, lozinka, uloga, email, vrijeme_registracije)
 VALUES
-('Filip', 'Janješić', '', 'Administrator', 'filip@gmail.com', '2023-12-06')
+('Filip', 'Janješić', '', 'Administrator', 'filip@gmail.com', '2023-12-06'),
 ('Ana', 'Anić', '', 'Kupac', 'ana@gmail.com', '2023-12-05'),
 ('Maja', 'Majić', '', 'Kupac', 'maja@gmail.com', '2023-12-07');
 
