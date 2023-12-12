@@ -10,7 +10,19 @@
 
 //Console.WriteLine("Unijeli ste " + Ime);
 
-Console.Write("Unesi visinu u centimetrima: ");
-int Visina = int.Parse(Console.ReadLine());
+////ulaz
+//Console.Write("Unesi visinu u centimetrima: ");
 
-Console.WriteLine("Visoki ste " +  (float)Visina / 100 + " metara.");
+////algoritam
+//int Visina = int.Parse(Console.ReadLine());
+
+////izlaz
+//Console.WriteLine("Visoki ste " +  (float)Visina / 100 + " metara.");
+
+
+Console.Write("Unesi decimalni broj: ");
+
+float Broj = float.Parse(Console.ReadLine());
+
+Console.WriteLine("Unijelit ste " + (float)Broj);
+
