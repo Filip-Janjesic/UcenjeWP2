@@ -1,8 +1,16 @@
-﻿//Console.WriteLine(7);
-//Console.WriteLine(true);
-//Console.Write("Prvi,");
-//Console.Write("Drugi i ");
-//Console.WriteLine(3.14);
+﻿
+
+/*
+
+Komentar kroz više linija - ne prporuča se 
+
+// ispisi različitih tipova podataka
+Console.WriteLine(7); // int
+Console.WriteLine(true); //bool
+Console.Write("Prvi"); // string
+Console.Write("Drugi"); // string
+Console.WriteLine(3.14); // float
+*/
 
 // varijabla je prostor u memoriji
 //Console.Write("Unesi ime: ");
@@ -10,19 +18,34 @@
 
 //Console.WriteLine("Unijeli ste " + Ime);
 
-////ulaz
-//Console.Write("Unesi visinu u centimetrima: ");
 
-////algoritam
+//// TIPIČAN PROGRAM IMA
+
+//// ulaz
+//Console.Write("Unesi visinu u centimetrima: ");
 //int Visina = int.Parse(Console.ReadLine());
 
-////izlaz
-//Console.WriteLine("Visoki ste " +  (float)Visina / 100 + " metara.");
+//// algoritam
+//float VisinaUMetrima = (float)Visina / 100;
+
+//// izlaz
+//Console.WriteLine("Visoki ste " + VisinaUMetrima + " metara");
 
 
-Console.Write("Unesi decimalni broj: ");
+//// Učitati decimalni broj i ispisati ga
 
-float Broj = float.Parse(Console.ReadLine());
+// Rješavati https://adventofcode.com/
 
-Console.WriteLine("Unijelit ste " + (float)Broj);
+// Program unosi dužinu i širinu prostorije
+// Program ispisuje površinu prostorije
+
+Console.Write("Unesi dužinu prostorije: ");
+float Duzina = float.Parse(Console.ReadLine());
+
+Console.Write("Unesi širinu prostorije: ");
+float Sirina = float.Parse(Console.ReadLine());
+
+var Povrsina = Duzina * Sirina;
+
+Console.WriteLine(Povrsina);
 
