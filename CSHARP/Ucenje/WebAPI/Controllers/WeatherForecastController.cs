@@ -32,9 +32,9 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("Hello")]
-        public String Helloworld()
+        public String Helloworld(string Ime, int Godine)
         {
-            return "Filip";
+            return "Upisali ste " + Ime + ", koji ima " + Godine + " godina";
         }
 
     }
