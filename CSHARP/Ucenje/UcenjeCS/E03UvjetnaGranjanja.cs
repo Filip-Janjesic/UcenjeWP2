@@ -38,6 +38,18 @@ namespace UcenjeCS
                 }
             }
 
+            Console.WriteLine("Unesi cijeli broj: ");
+            int broj = int.Parse(Console.ReadLine());
+
+            if (broj > 10)
+            {
+                Console.WriteLine("Osijek");
+            }
+            else
+            {
+                Console.WriteLine("Zagreb");
+            }
+
         }
     }
 }
