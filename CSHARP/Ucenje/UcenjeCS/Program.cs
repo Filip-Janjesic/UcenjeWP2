@@ -5,4 +5,4 @@ using UcenjeCS;
 
 //E02VarijableTipoviPodatakaOperatori.Izvedi();
 
-E03UvjetnaGranjanja.Izvedi();
+E03UvjetnaGrananja.Izvedi();
