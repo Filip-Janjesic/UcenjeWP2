@@ -80,6 +80,99 @@
             }
 
 
+            for(int i = 0; i < 10; i++)
+            {
+                for(int j = 0; j < 10; j++)
+                {
+                    Console.Write((i+1) * (j+1) + " ");
+                }
+                Console.WriteLine();
+            }
+            // DZ popraviti formatiranje
+            // DZ skužiti kako nasilno prekinuti iz unutarnje petlje vanjsku
+
+
+            // Petlja se može preskočiti
+
+            for(int i = 0; i < 10; i++)
+            {
+                if(i%3== 0)
+                {
+                    continue;
+                }
+
+                Console.WriteLine(i);
+            }
+
+            // petlja se može nasilno prekinuta
+            for(int i=0;i< 10; i++)
+            {
+                if (i == 3)
+                {
+                    break;
+                }
+                Console.WriteLine(i);
+            }
+
+
+
+            // beskonačna petlja
+            for(; ; )
+            {
+                Console.Write(new Random().Next(10,100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Console.Write(new Random().Next(10, 100) + " ");
+                Thread.Sleep(50);
+                break;
+            }
+
+
+
+            // Za uneseni broj između 1 i 10
+            // ispiši taj broj na kvadrat
+
+            //int broj;
+
+            //for(; ; )
+            //{
+            //    Console.Write("Unesi broj između 1 i 10: ");
+            //    broj = int.Parse(Console.ReadLine());
+            //    if(broj>=1 && broj <= 10)
+            //    {
+            //        break;
+            //    }
+            //    Console.WriteLine("Dragi korisniče, krivi unos!");
+            //}
+
+            //Console.WriteLine(broj*broj);
+
+
+            // 9 različitih načina zbaranja prvih 100 brojeva
+
+            //int i, s=0; for(i=1;i<=100;i++) s+=i;
+
+            // int i, s; for(i=1, s=0;i<=100; s+=i, i++);
+            //
+            // int i=1, s=0; for( ; i<=100; i++){ s+=i; }
+            //
+            // int i, s=0; for(i=1; ; i++){ if(i<=100) s+=i; else break;}
+            //
+            // int i, s=0; for(i=1;i<=100;){ s+=i; i++;}
+            //
+             //int i, s=0; for(i=1; ; ){ if(i<=100) {s+=i; i++;} else break;}
+            //
+            // int i=1, s=0; for( ; i<=100 ; ){ s+=i; i++;}
+            //
+            // int i=1, s=0; for( ; ; i++){if(i<=100)  s+=i; else break;}
+            //
+            // int i=1, s=0; for( ;  ; ){if(i<=100) {s+=i; i++;} else break;} 
+            //		
+
+            
 
 
 
@@ -87,6 +180,10 @@
 
 
 
+
+
+
+            // kraj metode
         }
     }
 }
