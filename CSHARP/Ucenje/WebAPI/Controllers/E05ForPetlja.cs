@@ -21,6 +21,20 @@ namespace WebAPI.Controllers
             
         }
 
+        [HttpGet]
+        [Route("zad2")]
+        public int ZbrojBrojeva(int broj)
+        {
+            // Ruta vraća zbroj primljenih brojeva
+            int suma = 0;
+            for(int i = 1; i <= broj; i++)
+            {
+                suma += i;
+            }
+            return suma;
+            // Ovaj algoritam odrađuje 100 iteracija, DZ napravite u 50
+        }
+
 
        
     }
