@@ -1,0 +1,36 @@
+S nastave zadaci:
+U projektu WebAPI kreirati rute
+
+GET /V01/vjezba1 
+- prima tri parametra: dva cijela broja i string. String može biti + - * i /. Ruta vraća rezultat
+
+
+POST /V01/vjezba2
+- prima niz decimalnih brojeva. Vraća zbroj cijelog dijela prvog elementa niza i decimalnog dijela zadnjeg elementa niza
+
+
+
+UcenjeCS - Zimski zadaCI
+Kreirati klasu V01ZimskoVjezbanje te slijedno jedno za drugim riješiti sljedeće zadatke
+1. Napisati program koji ispisuje sve brojeve od 1 do 100
+2. Napisati program koji ispisuje sve brojeve od 100 do 1 
+3. Napisati program koji ispisuje sve brojeve od 1 do 100 koji su cjelobrojno djeljivi s 7
+4. Napisati program koji unosi brojeve sve dok ne unese broj veći od 100, a zatim ispisuje koliko je bilo pokušaja unosa
+
+
+
+WebAPI - Zimski zadaCI
+KreiraTi Klasu V02ZimskoVjezbanje s rutama na kojima se nalaze sljedeći zadaci
+1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
+2. Ruta ne prima niti jedan parametar i vraća niz s svim parnim brojevima od 1 do 57
+3. Ruta ne prima niti jedan parametar i vraća zbroj svih parnih brojeva od 2 do 18
+4. Ruta prima jedan parametar koji je cijli broj i vraća zbroj svih brojava od 1 do primljenog broja
+5. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim parnim brojevima između primljenih brojeva
+6. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim neparnim brojevima između primljenih brojeva
+7. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva
+8. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva koji su cjelobrojno djeljivi s 3
+9. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva koji su cjelobrojno djeljivi s 3 i 5
+10. Ruta prima dva parametra koji su cijeli brojevi i vraća dvodimenzionalni niz (matricu) koja sadrži tablicu množenja za dva primljena broja
+11. Ruta prima jedan parametar koji je cijeli broj i vraća niz cijelih brojeva koji su složeni od primljenog broja do broja 1
+12. Ruta prima cijeli broj i vraća logičku istinu ako je primljeni broj prosti (prim - prime) broj, odnosno logičku laž ako nije
+13. Ruta prima dva parametra koji su cijeli brojevi te vraća dvodimenzionalni niz (matricu) cijelih brojeva koji su složeni prema slici zadatka: Ciklična matrica
