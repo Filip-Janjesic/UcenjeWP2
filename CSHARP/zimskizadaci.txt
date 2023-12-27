@@ -1,12 +1,3 @@
-UcenjeCS - Zimski zadaci
-Kreirati klasu V01ZimskoVjezbanje te slijedno jedno za drugim riješiti sljedeće zadatke
-1. Napisati program koji ispisuje sve brojeve od 1 do 100
-2. Napisati program koji ispisuje sve brojeve od 100 do 1 
-3. Napisati program koji ispisuje sve brojeve od 1 do 100 koji su cjelobrojno djeljivi s 7
-4. Napisati program koji unosi brojeve sve dok ne unese broj veći od 100, a zatim ispisuje koliko je bilo pokušaja unosa
-
-
-
 WebAPI - Zimski zadaCI
 KreiraTi Klasu V02ZimskoVjezbanje s rutama na kojima se nalaze sljedeći zadaci
 1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
