@@ -1,4 +1,4 @@
-UcenjeCS - Zimski zadaCI
+UcenjeCS - Zimski zadaci
 Kreirati klasu V01ZimskoVjezbanje te slijedno jedno za drugim riješiti sljedeće zadatke
 1. Napisati program koji ispisuje sve brojeve od 1 do 100
 2. Napisati program koji ispisuje sve brojeve od 100 do 1 
