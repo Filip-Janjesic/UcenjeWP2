@@ -1,6 +1,6 @@
 WebAPI - Zimski zadaCI
 KreiraTi Klasu V02ZimskoVjezbanje s rutama na kojima se nalaze sljedeći zadaci
-1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
+
 2. Ruta ne prima niti jedan parametar i vraća niz s svim parnim brojevima od 1 do 57
 3. Ruta ne prima niti jedan parametar i vraća zbroj svih parnih brojeva od 2 do 18
 4. Ruta prima jedan parametar koji je cijli broj i vraća zbroj svih brojava od 1 do primljenog broja
