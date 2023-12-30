@@ -58,6 +58,25 @@ namespace WebAPI.Controllers
 
             return Ok(zbroj);
         }
+
+        // 5. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim parnim brojevima između primljenih brojeva
+        [HttpGet]
+        [Route("vjezba5")]
+        public IActionResult Vjezba5(int broj1, int broj2)
+        {
+            if (broj1 > broj2)
+            {
+                int temp = broj1;
+                broj1 = broj2;
+                broj2 = temp;
+            }
+
+            int[] parniBrojevi = Enumerable.Range(broj1, broj2 - broj1 + 1)
+                                           .Where(x => x % 2 == 0)
+                                           .ToArray();
+
+            return Ok(parniBrojevi);
+        }
     }
 
 }
