@@ -1,7 +1,6 @@
 WebAPI - Zimski zadaCI
 KreiraTi Klasu V02ZimskoVjezbanje s rutama na kojima se nalaze sljedeći zadaci
 
-5. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim parnim brojevima između primljenih brojeva
 6. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim neparnim brojevima između primljenih brojeva
 7. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva
 8. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva koji su cjelobrojno djeljivi s 3
