@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         // 3. Ruta ne prima niti jedan parametar i vraća zbroj svih parnih brojeva od 2 do 18
         [HttpGet]
         [Route("vjezba3")]
-        public IActionResult ZbrojParnihBrojeva()
+        public IActionResult Vjezba3()
         {
             int zbroj = 0;
 
@@ -44,6 +44,20 @@ namespace WebAPI.Controllers
             return Ok(zbroj);
         }
 
+        // 4. Ruta prima jedan parametar koji je cijli broj i vraća zbroj svih brojava od 1 do primljenog broja
+        [HttpGet]
+        [Route("vjezba4")]
+        public IActionResult Vjezba4(int broj)
+        {
+            int zbroj = 0;
+
+            for (int i = 1; i <= broj; i++)
+            {
+                zbroj += i;
+            }
+
+            return Ok(zbroj);
+        }
     }
 
 }
