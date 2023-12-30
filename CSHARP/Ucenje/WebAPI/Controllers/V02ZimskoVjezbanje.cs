@@ -28,6 +28,22 @@ namespace WebAPI.Controllers
             }
             return Ok(parniBrojevi);
         }
+
+        // 3. Ruta ne prima niti jedan parametar i vraća zbroj svih parnih brojeva od 2 do 18
+        [HttpGet]
+        [Route("vjezba3")]
+        public IActionResult ZbrojParnihBrojeva()
+        {
+            int zbroj = 0;
+
+            for (int i = 2; i <= 18; i += 2)
+            {
+                zbroj += i;
+            }
+
+            return Ok(zbroj);
+        }
+
     }
 
 }
