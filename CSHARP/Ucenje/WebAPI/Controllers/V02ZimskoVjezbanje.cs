@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("VO2")]
 
-    // 1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
     public class V02ZimskoVjezbanje : ControllerBase
     {
+        // 1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
         [HttpGet]
         [Route("vjezba1")]
         public IActionResult Vjezba1()
@@ -16,5 +15,19 @@ namespace WebAPI.Controllers
             int zbroj = Enumerable.Range(1, 100).Sum();
             return Ok($"Zbroj prvih 100 brojeva je: {zbroj}");
         }
+
+        // 2. Ruta ne prima niti jedan parametar i vraća niz s svim parnim brojevima od 1 do 57
+        [HttpGet]
+        [Route("vjezba2")]
+        public IActionResult Vjezba2() 
+        {
+            var parniBrojevi = new System.Collections.Generic.List<int>();
+            for (int i = 1; i <= 57; i += 2)
+            {
+                parniBrojevi.Add(i);
+            }
+            return Ok(parniBrojevi);
+        }
     }
+
 }
