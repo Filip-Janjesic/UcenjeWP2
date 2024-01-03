@@ -7,6 +7,7 @@ namespace WebAPI.Controllers
 
     public class V02ZimskoVjezbanje : ControllerBase
     {
+
         // 1. Ruta ne prima niti jedan parametar i vraća zbroj prvih 100 brojeva
         [HttpGet]
         [Route("vjezba1")]
@@ -153,6 +154,24 @@ namespace WebAPI.Controllers
             return Ok(zbrojDjeljiviSa3i5);
         }
 
+        // 10. Ruta prima dva parametra koji su cijeli brojevi i vraća dvodimenzionalni niz (matricu) koja sadrži tablicu množenja za dva primljena broja
+        [HttpGet]
+        [Route("vjezba10")]
+        [Produces("application/json")]
+        public IActionResult Vjezba10(int broj1, int broj2)
+        {
+            int[,] rezultatMnozenja = new int[10, 10];
+
+            for (int i = 1; i <= 10; i++)
+            {
+                for (int j = 1; j <= 10; j++)
+                {
+                    rezultatMnozenja[i - 1, j - 1] = i * j;
+                }
+            }
+
+            return Ok(rezultatMnozenja);
+        }
 
     }
 }
