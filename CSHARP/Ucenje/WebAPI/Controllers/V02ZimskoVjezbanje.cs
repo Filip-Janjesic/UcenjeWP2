@@ -77,6 +77,7 @@ namespace WebAPI.Controllers
 
             return Ok(parniBrojevi);
         }
+
         // 6. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim neparnim brojevima između primljenih brojeva
         [HttpGet]
         [Route("vjezba6")]
