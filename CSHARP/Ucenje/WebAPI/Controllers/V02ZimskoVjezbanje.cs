@@ -77,6 +77,25 @@ namespace WebAPI.Controllers
 
             return Ok(parniBrojevi);
         }
+        // 6. Ruta prima dva parametra koji su cijeli brojevi i vraća niz s svim neparnim brojevima između primljenih brojeva
+        [HttpGet]
+        [Route("vjezba6")]
+        public IActionResult Vjezba6(int broj1, int broj2)
+        {
+            if (broj1 > broj2)
+            {
+                int temp = broj1;
+                broj1 = broj2;
+                broj2 = temp;
+            }
+
+            int[] neparniBrojevi = Enumerable.Range(broj1, broj2 - broj1 + 1)
+                                             .Where(x => x % 2 != 0)
+                                             .ToArray();
+
+            return Ok(neparniBrojevi);
+        }
+
     }
 
 }
