@@ -157,7 +157,6 @@ namespace WebAPI.Controllers
         // 10. Ruta prima dva parametra koji su cijeli brojevi i vraća dvodimenzionalni niz (matricu) koja sadrži tablicu množenja za dva primljena broja
         [HttpGet]
         [Route("vjezba10")]
-        [Produces("application/json")]
         public IActionResult Vjezba10(int broj1, int broj2)
         {
             int[,] rezultatMnozenja = new int[10, 10];
