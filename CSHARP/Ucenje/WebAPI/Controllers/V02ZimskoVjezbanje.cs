@@ -114,5 +114,25 @@ namespace WebAPI.Controllers
 
             return Ok(zbroj);
         }
+
+        // 8. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva koji su cjelobrojno djeljivi s 3
+        [HttpGet]
+        [Route("vjezba8")]
+        public IActionResult Vjezba8(int broj1, int broj2)
+        {
+            if (broj1 > broj2)
+            {
+                int temp = broj1;
+                broj1 = broj2;
+                broj2 = temp;
+            }
+
+            int zbrojDjeljiviSa3 = Enumerable.Range(broj1, broj2 - broj1 + 1)
+                                             .Where(x => x % 3 == 0)
+                                             .Sum();
+
+            return Ok(zbrojDjeljiviSa3);
+        }
+
     }
 }
