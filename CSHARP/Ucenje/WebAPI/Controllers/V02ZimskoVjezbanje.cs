@@ -97,6 +97,22 @@ namespace WebAPI.Controllers
             return Ok(neparniBrojevi);
         }
 
-    }
+        // 7. Ruta prima dva parametra koji su cijeli brojevi i vraća zbroj svih brojeva između primljenih brojeva
+        [HttpGet]
+        [Route("vjezba7")]
+        public IActionResult Vjezba7(int broj1, int broj2)
+        {
+            if (broj1 > broj2)
+            {
+                int temp = broj1;
+                broj1 = broj2;
+                broj2 = temp;
+            }
 
+            int zbroj = Enumerable.Range(broj1, broj2 - broj1 + 1)
+                                  .Sum();
+
+            return Ok(zbroj);
+        }
+    }
 }
