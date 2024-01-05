@@ -174,5 +174,26 @@ namespace WebAPI.Controllers
             return Ok(matrica);
         }
 
+        // 11. Ruta prima jedan parametar koji je cijeli broj i vraća niz cijelih brojeva koji su složeni od primljenog broja do broja 1
+        [HttpGet]
+        [Route("vjezba11")]
+        public IActionResult Vjezba11(int broj)
+        {
+            if (broj < 1)
+            {
+                return BadRequest("Broj mora biti jednak ili veći od 1.");
+            }
+
+            List<int> rezultat = new List<int>();
+
+            while (broj > 0)
+            {
+                rezultat.Add(broj);
+                broj--;
+            }
+
+            return Ok(rezultat.ToArray());
+        }
+
     }
 }
