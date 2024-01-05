@@ -155,34 +155,6 @@ namespace WebAPI.Controllers
         }
 
         // 10. Ruta prima dva parametra koji su cijeli brojevi i vraća dvodimenzionalni niz (matricu) koja sadrži tablicu množenja za dva primljena broja
-        [HttpGet]
-        [Route("vjezba10")]
-        public IActionResult Vjezba10(int broj1, int broj2)
-        {
-            MatrixResponse response = new MatrixResponse
-            {
-                Matrix = new int[10][]
-            };
-
-            for (int i = 1; i <= 10; i++)
-            {
-                response.Matrix[i - 1] = new int[10];
-
-                for (int j = 1; j <= 10; j++)
-                {
-                    response.Matrix[i - 1][j - 1] = i * j;
-                }
-            }
-
-            response.FlattenedMatrix = response.Matrix.SelectMany(row => row).ToArray();
-
-            return Ok(response);
-        }
-
-        public class MatrixResponse
-        {
-            public int[][] Matrix { get; set; }
-            public int[] FlattenedMatrix { get; set; }
-        }
+        
     }
 }
