@@ -159,18 +159,30 @@ namespace WebAPI.Controllers
         [Route("vjezba10")]
         public IActionResult Vjezba10(int broj1, int broj2)
         {
-            int[,] rezultatMnozenja = new int[10, 10];
+            MatrixResponse response = new MatrixResponse
+            {
+                Matrix = new int[10][]
+            };
 
             for (int i = 1; i <= 10; i++)
             {
+                response.Matrix[i - 1] = new int[10];
+
                 for (int j = 1; j <= 10; j++)
                 {
-                    rezultatMnozenja[i - 1, j - 1] = i * j;
+                    response.Matrix[i - 1][j - 1] = i * j;
                 }
             }
 
-            return Ok(rezultatMnozenja);
+            response.FlattenedMatrix = response.Matrix.SelectMany(row => row).ToArray();
+
+            return Ok(response);
         }
 
+        public class MatrixResponse
+        {
+            public int[][] Matrix { get; set; }
+            public int[] FlattenedMatrix { get; set; }
+        }
     }
 }
