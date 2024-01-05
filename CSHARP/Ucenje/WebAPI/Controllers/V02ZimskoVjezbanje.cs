@@ -195,5 +195,26 @@ namespace WebAPI.Controllers
             return Ok(rezultat.ToArray());
         }
 
+        // 12. Ruta prima cijeli broj i vraća logičku istinu ako je primljeni broj prosti (prim - prime) broj, odnosno logičku laž ako nije
+        [HttpGet]
+        [Route("vjezba12")]
+        public IActionResult Vjezba12(int broj)
+        {
+            if (broj < 2)
+            {
+                return Ok(false);
+            }
+
+            for (int i = 2; i <= Math.Sqrt(broj); i++)
+            {
+                if (broj % i == 0)
+                {
+                    return Ok(false);
+                }
+            }
+
+            return Ok(true);
+        }
+
     }
 }
