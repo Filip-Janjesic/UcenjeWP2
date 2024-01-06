@@ -217,5 +217,98 @@ namespace WebAPI.Controllers
         }
 
         // 13. Ruta prima dva parametra koji su cijeli brojevi te vraća dvodimenzionalni niz (matricu) cijelih brojeva koji su složeni prema slici zadatka: Ciklična matrica
+        [HttpGet]
+        [Route("vjezba13")]
+        public IActionResult Vjezba13(int redovi, int stupci, string smerPopunjavanja)
+        {
+            var matrica = new List<List<int>>();
+            var privremeniNiz = new int[redovi][];
+
+            for (int i = 0; i < redovi; i++)
+            {
+                privremeniNiz[i] = new int[stupci];
+                matrica.Add(new List<int>());
+            }
+
+            int brojac = 1;
+            int pocetakStupca = 0;
+            int krajStupca = stupci - 1;
+            int pocetakReda = 0;
+            int krajReda = redovi - 1;
+
+            while (pocetakStupca <= krajStupca && pocetakReda <= krajReda)
+            {
+                if (smerPopunjavanja == "sah")
+                {
+                    for (int i = pocetakStupca; i <= krajStupca; i++)
+                    {
+                        privremeniNiz[pocetakReda][i] = brojac;
+                        brojac++;
+                    }
+                    pocetakReda++;
+
+                    for (int i = pocetakReda; i <= krajReda; i++)
+                    {
+                        privremeniNiz[i][krajStupca] = brojac;
+                        brojac++;
+                    }
+                    krajStupca--;
+
+                    for (int i = krajStupca; i >= pocetakStupca; i--)
+                    {
+                        privremeniNiz[krajReda][i] = brojac;
+                        brojac++;
+                    }
+                    krajReda--;
+
+                    for (int i = krajReda; i >= pocetakReda; i--)
+                    {
+                        privremeniNiz[i][pocetakStupca] = brojac;
+                        brojac++;
+                    }
+                    pocetakStupca++;
+                }
+                else if (smerPopunjavanja == "suprotno")
+                {
+                    for (int i = krajReda; i >= pocetakReda; i--)
+                    {
+                        privremeniNiz[i][pocetakStupca] = brojac;
+                        brojac++;
+                    }
+                    pocetakStupca++;
+
+                    for (int i = krajStupca; i >= pocetakStupca; i--)
+                    {
+                        privremeniNiz[krajReda][i] = brojac;
+                        brojac++;
+                    }
+                    krajReda--;
+
+                    for (int i = pocetakReda; i <= krajReda; i++)
+                    {
+                        privremeniNiz[i][krajStupca] = brojac;
+                        brojac++;
+                    }
+                    krajStupca--;
+
+                    for (int i = pocetakStupca; i <= krajStupca; i++)
+                    {
+                        privremeniNiz[pocetakReda][i] = brojac;
+                        brojac++;
+                    }
+                    pocetakReda++;
+                }
+
+            }
+
+            for (int i = 0; i < redovi; i++)
+            {
+                matrica[i].AddRange(privremeniNiz[i]);
+            }
+
+            return Ok(matrica);
+        }
+
+
     }
 }
