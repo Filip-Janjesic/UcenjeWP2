@@ -1,0 +1,22 @@
+--CREATE DATABASE frizerski;
+--GO
+
+USE frizerski;
+GO
+
+CREATE TABLE djelatnici(
+sifra INT PRIMARY KEY IDENTITY (1,1)
+
+);
+
+CREATE TABLE posjete(
+sifra INT PRIMARY KEY IDENTITY (1,1)
+);
+
+CREATE TABLE korisnici(
+sifra INT PRIMARY KEY IDENTITY (1,1)
+);
+
+CREATE TABLE usluge(
+sifra INT PRIMARY KEY IDENTITY (1,1)
+);
