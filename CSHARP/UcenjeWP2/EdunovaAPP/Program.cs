@@ -10,10 +10,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-// prilagodba za dokumentaciju, èitati https://medium.com/geekculture/customizing-swagger-in-asp-net-core-5-2c98d03cbe52
+// prilagodba za dokumentaciju, Äitati https://medium.com/geekculture/customizing-swagger-in-asp-net-core-5-2c98d03cbe52
 builder.Services.AddSwaggerGen(sgo =>
 { // sgo je instanca klase SwaggerGenOptions
-  // èitati https://devintxcontent.blob.core.windows.net/showcontent/Speaker%20Presentations%20Fall%202017/Web%20API%20Best%20Practices.pdf
+  // Äitati https://devintxcontent.blob.core.windows.net/showcontent/Speaker%20Presentations%20Fall%202017/Web%20API%20Best%20Practices.pdf
     var o = new Microsoft.OpenApi.Models.OpenApiInfo()
     {
         Title = "Edunova API",
@@ -51,7 +51,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 app.UseSwagger();
-app.UseSwaggerUI();
+// moguÄ‡nost generiranja poziva rute u CMD i Powershell
+app.UseSwaggerUI(opcije =>
+    {
+        opcije.ConfigObject.
+        AdditionalItems.Add("requestSnippetsEnabled", true);
+    });
 }
 
 app.UseHttpsRedirection();
