@@ -1,14 +1,32 @@
+﻿
+-- Priprema za produkciju
+-- Ovo za produkciju ne treba
+--use master;
+--go
+--drop database if exists edunovawp2;
+--go
 
-use master;
-go
-drop database if exists edunovawp2;
-go
+--create database edunovawp2;
+--go
+--alter database edunovawp2 collate Croatian_CI_AS;
+--go
+--use edunovawp2;
 
-create database edunovawp2;
-go
-alter database edunovawp2 collate Croatian_CI_AS;
-go
-use edunovawp2;
+
+-- Ovo za produkciju treba
+SELECT name, collation_name FROM sys.databases;
+GO
+-- Doma primjeniti na ime svoje baze 3 puta
+ALTER DATABASE db_a98acf_tjakopec SET SINGLE_USER WITH
+ROLLBACK IMMEDIATE;
+GO
+ALTER DATABASE db_a98acf_tjakopec COLLATE Croatian_CI_AS;
+GO
+ALTER DATABASE db_a98acf_tjakopec SET MULTI_USER;
+GO
+SELECT name, collation_name FROM sys.databases;
+GO
+
 
 create table smjerovi(
 sifra int not null primary key identity(1,1),
