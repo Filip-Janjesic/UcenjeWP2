@@ -10,6 +10,7 @@ function App() {
       <Routes>
         <>
           <Route path={RoutesNames.HOME} element={<Pocetna />} />
+          <Route path={RoutesNames.SMJEROVI_PREGLED} element={<Pocetna />} />
         </>
       </Routes>
     </>
