@@ -1,4 +1,5 @@
 export const RoutesNames = {
-    HOME: '/'
+    HOME: '/',
+    SMJEROVI_PREGLED: '/smjerovi'
 
 };
