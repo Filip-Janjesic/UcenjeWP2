@@ -21,5 +21,7 @@ namespace EdunovaAPP.Data
         /// Smjerovi u bazi
         /// </summary>
         public DbSet<Smjer> Smjerovi { get; set; }
+
+        public DbSet<Predavac> Predavaci { get; set; }
     }
 }
