@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import {  Button, Container, Table } from "react-bootstrap";
 import SmjerService from "../../services/SmjerService";
 import { NumericFormat } from "react-number-format";
 import { GrValidate } from "react-icons/gr";
 import { IoIosAdd } from "react-icons/io";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { MdOutlineDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { RoutesNames } from "../../constants";
 
@@ -38,6 +37,15 @@ export default function Smjerovi(){
         if (smjer.verificiran==null) return 'Nije definirano';
         if(smjer.verificiran) return 'Verificiran';
         return 'NIJE verificiran';
+    }
+
+    async function obrisiSmjer(sifra){
+        const odgovor = await SmjerService.obrisiSmjer(sifra);
+        if (odgovor.ok){
+            alert(odgovor.poruka.data.poruka);
+            dohvatiSmjerove();
+        }
+        
     }
 
 
@@ -111,11 +119,14 @@ export default function Smjerovi(){
                                 </Link>
                                 
                                     &nbsp;&nbsp;&nbsp;
-                                <Link>
+                                <Button
+                                    variant="danger"
+                                    onClick={()=>obrisiSmjer(smjer.sifra)}
+                                >
                                     <FaTrash  
                                     size={25}
                                     />
-                                </Link>
+                                </Button>
 
                             </td>
                         </tr>
