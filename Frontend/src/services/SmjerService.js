@@ -27,17 +27,42 @@ async function dodajSmjer(smjer){
         return {ok: true, poruka: 'Uspješno dodano'}
     })
     .catch((e)=>{
-        //console.log(e.response.data.errors.Naziv[0]);
-        return {ok: false, poruka: e.response.data.errors.Naziv[0]}
+        console.log(e.response.data.errors);
+        return {ok: false, poruka: 'Greška'}
     });
     return odgovor;
 }
 
+async function promjeniSmjer(sifra,smjer){
+    const odgovor = await httpService.put('/Smjer/'+sifra,smjer)
+    .then(()=>{
+        return {ok: true, poruka: 'Uspješno promjnjeno'}
+    })
+    .catch((e)=>{
+        console.log(e.response.data.errors);
+        return {ok: false, poruka: 'Greška'}
+    });
+    return odgovor;
+}
+
+async function getBySifra(sifra){
+    return await httpService.get('/Smjer/' + sifra)
+    .then((res)=>{
+        if(App.DEV) console.table(res.data);
+
+        return res;
+    }).catch((e)=>{
+        console.log(e);
+        return {poruka: e}
+    });
+}
 
 
 
 export default{
     getSmjerovi,
     obrisiSmjer,
-    dodajSmjer
+    dodajSmjer,
+    promjeniSmjer,
+    getBySifra
 };

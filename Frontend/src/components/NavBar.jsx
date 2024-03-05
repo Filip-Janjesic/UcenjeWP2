@@ -30,7 +30,9 @@ function NavBar() {
               >
                 Smjerovi
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
+              <NavDropdown.Item 
+              onClick={()=>navigate(RoutesNames.PREDAVACI_PREGLED)}
+              >
                 Predavači
               </NavDropdown.Item>
               <NavDropdown.Item href="#action/3.3">
