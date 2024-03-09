@@ -21,6 +21,8 @@ function App() {
       <Routes>
         <>
           <Route path={RoutesNames.HOME} element={<Pocetna />} />
+
+          
           <Route path={RoutesNames.SMJEROVI_PREGLED} element={<Smjerovi />} />
           <Route path={RoutesNames.SMJEROVI_NOVI} element={<SmjeroviDodaj />} />
           <Route path={RoutesNames.SMJEROVI_PROMJENI} element={<SmjeroviPromjeni />} />

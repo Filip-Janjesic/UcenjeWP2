@@ -35,8 +35,8 @@ async function obrisi(sifra) {
     const odgovor = await httpService
       .post('/' + naziv, entitet)
       .then(() => {
-        console.log('Unio smjer');
-        return { ok: true, poruka: 'Unio smjer' };
+        console.log('Unio ' + naziv);
+        return { ok: true, poruka: 'Unio'  + naziv};
       })
       .catch((error) => {
         console.log(error);

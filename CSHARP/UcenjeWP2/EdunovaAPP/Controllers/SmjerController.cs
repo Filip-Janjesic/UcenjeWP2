@@ -1,4 +1,5 @@
 ﻿using EdunovaAPP.Data;
+using EdunovaAPP.Extensions;
 using EdunovaAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -54,7 +55,7 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(smjerovi);
+                return new JsonResult(smjerovi.MapSmjerReadList());
             }catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable, 
@@ -79,7 +80,7 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(smjer);
+                return new JsonResult(smjer.MapSmjerReadToDTO());
             }
             catch (Exception ex)
             {
@@ -101,17 +102,19 @@ namespace EdunovaAPP.Controllers
         /// <response code="503">Baza nedostupna iz razno raznih razloga</response> 
         /// <returns>Smjer s šifrom koju je dala baza</returns>
         [HttpPost]
-        public IActionResult Post(Smjer smjer)
+        public IActionResult Post(SmjerDTOInsertUpdate smjerDTO)
         {
-            if (!ModelState.IsValid || smjer==null)
+            if (!ModelState.IsValid || smjerDTO == null)
             {
                 return BadRequest();
             }
             try
             {
+                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO();
                 _context.Smjerovi.Add(smjer);
                 _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, smjer);
+                return StatusCode(StatusCodes.Status201Created, 
+                    smjer.MapSmjerReadToDTO());
             }catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
@@ -146,9 +149,9 @@ namespace EdunovaAPP.Controllers
         /// <response code="503">Baza nedostupna</response> 
         [HttpPut]
         [Route("{sifra:int}")]
-        public IActionResult Put(int sifra, Smjer smjer)
+        public IActionResult Put(int sifra, SmjerDTOInsertUpdate smjerDTO)
         {
-            if(sifra<=0 || !ModelState.IsValid || smjer == null)
+            if(sifra<=0 || !ModelState.IsValid || smjerDTO == null)
             {
                 return BadRequest();
             }
@@ -164,20 +167,15 @@ namespace EdunovaAPP.Controllers
                 {
                     return StatusCode(StatusCodes.Status204NoContent,sifra);
                 }
+                
+                // OVO NIJE DOBRO
+                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO();
+                smjer.Sifra = sifra;
 
-
-                // inače ovo rade mapperi
-                // za sada ručno
-                smjerIzBaze.Naziv = smjer.Naziv;
-                smjerIzBaze.Trajanje= smjer.Trajanje;
-                smjerIzBaze.Cijena= smjer.Cijena;
-                smjerIzBaze.Upisnina= smjer.Upisnina;
-                smjerIzBaze.Verificiran=smjer.Verificiran;
-
-                _context.Smjerovi.Update(smjerIzBaze);
+                _context.Smjerovi.Update(smjer);
                 _context.SaveChanges();
 
-                return StatusCode(StatusCodes.Status200OK,smjerIzBaze);
+                return StatusCode(StatusCodes.Status200OK,smjer.MapSmjerReadToDTO);
             }
             catch (Exception ex)
             {
