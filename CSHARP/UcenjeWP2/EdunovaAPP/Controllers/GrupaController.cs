@@ -1,4 +1,5 @@
 ﻿using EdunovaAPP.Data;
+using EdunovaAPP.Extensions;
 using EdunovaAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,17 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(lista);
+                /*
+                Console.WriteLine("=========================");
+                foreach (var item in lista)
+                {
+                    Console.WriteLine(item.Smjer!.Naziv);
+                    Console.WriteLine(item.Predavac!.Ime);
+                    Console.WriteLine(item.Polaznici!.Count());
+                }
+                Console.WriteLine("=========================");
+                */
+                return new JsonResult(lista.MapGrupaReadList());
             }catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable, 
@@ -57,12 +68,13 @@ namespace EdunovaAPP.Controllers
             }
             try
             {
-                var p = _context.Grupe.Find(sifra);
+                var p = _context.Grupe.Include(i=>i.Smjer).Include(i=>i.Predavac)
+                    .Include(i=>i.Polaznici).FirstOrDefault(x => x.Sifra == sifra);
                 if (p == null)
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(p);
+                return new JsonResult(p.MapGrupaInsertUpdatedToDTO());
             }
             catch (Exception ex)
             {
@@ -73,17 +85,39 @@ namespace EdunovaAPP.Controllers
 
 
         [HttpPost]
-        public IActionResult Post(Grupa entitet)
+        public IActionResult Post(GrupaDTOInsertUpdate dto)
         {
-            if (!ModelState.IsValid || entitet == null)
+            if (!ModelState.IsValid || dto == null)
             {
                 return BadRequest();
             }
+
+            var smjer = _context.Smjerovi.Find(dto.smjer);
+
+            if(smjer== null)
+            {
+                return BadRequest();
+            }
+
+            var predavac = _context.Predavaci.Find(dto.predavac);
+
+            if (predavac == null)
+            {
+                return BadRequest();
+            }
+
+
+            var entitet = dto.MapGrupaInsertUpdateFromDTO(new Grupa());
+
+            entitet.Smjer = smjer;
+            entitet.Predavac=predavac;
+
+
             try
             {
                 _context.Grupe.Add(entitet);
                 _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, entitet);
+                return StatusCode(StatusCodes.Status201Created, entitet.MapGrupaReadToDTO());
             }catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
@@ -91,10 +125,66 @@ namespace EdunovaAPP.Controllers
             }
         }
 
-       
-       
+        [HttpPut]
+        [Route("{sifra:int}")]
+        public IActionResult Put(int sifra, GrupaDTOInsertUpdate dto)
+        {
+            if (sifra <= 0 || !ModelState.IsValid || dto == null)
+            {
+                return BadRequest();
+            }
 
-       
+
+            try
+            {
+
+
+                var entitet = _context.Grupe.Include(i => i.Smjer).Include(i => i.Predavac)
+                    .Include(i => i.Polaznici).FirstOrDefault(x => x.Sifra == sifra);
+
+                if (entitet == null)
+                {
+                    return StatusCode(StatusCodes.Status204NoContent, sifra);
+                }
+
+                var smjer = _context.Smjerovi.Find(dto.smjer);
+
+                if (smjer == null)
+                {
+                    return BadRequest();
+                }
+
+                var predavac = _context.Predavaci.Find(dto.predavac);
+
+                if (predavac == null)
+                {
+                    return BadRequest();
+                }
+
+
+                entitet = dto.MapGrupaInsertUpdateFromDTO(entitet);
+
+                entitet.Smjer = smjer;
+                entitet.Predavac = predavac;
+
+
+                _context.Grupe.Update(entitet);
+                _context.SaveChanges();
+
+                return StatusCode(StatusCodes.Status200OK, entitet.MapGrupaReadToDTO());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    ex.Message);
+            }
+
+        }
+
+
+
+
+
         [HttpDelete]
         [Route("{sifra:int}")]
         [Produces("application/json")]
@@ -126,6 +216,36 @@ namespace EdunovaAPP.Controllers
                     ex.Message);
             }
 
+        }
+
+
+
+
+
+        [HttpGet]
+        [Route("Polaznici/{sifraGrupe:int}")]
+        public IActionResult GetPolaznici(int sifraGrupe)
+        {
+            // kontrola ukoliko upit nije valjan
+            if (!ModelState.IsValid || sifraGrupe <= 0)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var p = _context.Grupe
+                    .Include(i => i.Polaznici).FirstOrDefault(x => x.Sifra == sifraGrupe);
+                if (p == null)
+                {
+                    return new EmptyResult();
+                }
+                return new JsonResult(p.Polaznici!.MapPolaznikReadList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                    ex.Message);
+            }
         }
 
 
