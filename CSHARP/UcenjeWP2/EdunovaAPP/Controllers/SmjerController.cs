@@ -80,7 +80,7 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(smjer.MapSmjerReadToDTO());
+                return new JsonResult(smjer.MapSmjerInsertUpdatedToDTO());
             }
             catch (Exception ex)
             {
@@ -110,7 +110,7 @@ namespace EdunovaAPP.Controllers
             }
             try
             {
-                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO();
+                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO(new Smjer());
                 _context.Smjerovi.Add(smjer);
                 _context.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created, 
@@ -168,14 +168,13 @@ namespace EdunovaAPP.Controllers
                     return StatusCode(StatusCodes.Status204NoContent,sifra);
                 }
                 
-                // OVO NIJE DOBRO
-                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO();
-                smjer.Sifra = sifra;
+                var smjer = smjerDTO.MapSmjerInsertUpdateFromDTO(smjerIzBaze);
+ 
 
                 _context.Smjerovi.Update(smjer);
                 _context.SaveChanges();
 
-                return StatusCode(StatusCodes.Status200OK,smjer.MapSmjerReadToDTO);
+                return StatusCode(StatusCodes.Status200OK,smjer.MapSmjerReadToDTO());
             }
             catch (Exception ex)
             {
