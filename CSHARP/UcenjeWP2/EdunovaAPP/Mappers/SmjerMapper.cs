@@ -35,15 +35,5 @@ namespace EdunovaAPP.Mappers
                 );
         }
 
-        public static Mapper InicijalizirajInsertUpdateFromDTO()
-        {
-            return new Mapper(
-                new MapperConfiguration(c =>
-                {
-                    c.CreateMap<SmjerDTOInsertUpdate,Smjer>();
-                })
-                );
-        }
-
     }
 }
