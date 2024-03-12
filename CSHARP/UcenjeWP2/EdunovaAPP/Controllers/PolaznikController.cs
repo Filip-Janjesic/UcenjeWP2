@@ -1,4 +1,5 @@
 ﻿using EdunovaAPP.Data;
+using EdunovaAPP.Extensions;
 using EdunovaAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,7 +34,7 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(lista);
+                return new JsonResult(lista.MapPolaznikReadList());
             }catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable, 
@@ -57,7 +58,7 @@ namespace EdunovaAPP.Controllers
                 {
                     return new EmptyResult();
                 }
-                return new JsonResult(p);
+                return new JsonResult(p.MapPolaznikInsertUpdatedToDTO());
             }
             catch (Exception ex)
             {
@@ -68,17 +69,18 @@ namespace EdunovaAPP.Controllers
 
 
         [HttpPost]
-        public IActionResult Post(Polaznik entitet)
+        public IActionResult Post(PolaznikDTOInsertUpdate dto)
         {
-            if (!ModelState.IsValid || entitet == null)
+            if (!ModelState.IsValid || dto == null)
             {
                 return BadRequest();
             }
             try
             {
+                var entitet = dto.MapPolaznikInsertUpdateFromDTO(new Polaznik());
                 _context.Polaznici.Add(entitet);
                 _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, entitet);
+                return StatusCode(StatusCodes.Status201Created, entitet.MapPolaznikReadToDTO());
             }catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable,
@@ -89,9 +91,9 @@ namespace EdunovaAPP.Controllers
        
         [HttpPut]
         [Route("{sifra:int}")]
-        public IActionResult Put(int sifra, Polaznik entitet)
+        public IActionResult Put(int sifra, PolaznikDTOInsertUpdate dto)
         {
-            if(sifra<=0 || !ModelState.IsValid || entitet == null)
+            if(sifra<=0 || !ModelState.IsValid || dto == null)
             {
                 return BadRequest();
             }
@@ -109,18 +111,14 @@ namespace EdunovaAPP.Controllers
                 }
 
 
-                // inače ovo rade mapperi
-                // za sada ručno
-                entitetIzBaze.Ime = entitet.Ime;
-                entitetIzBaze.Prezime= entitet.Prezime;
-                entitetIzBaze.Oib= entitet.Oib;
-                entitetIzBaze.Email= entitet.Email;
-                entitetIzBaze.BrojUgovora=entitet.BrojUgovora;
+                entitetIzBaze = dto.MapPolaznikInsertUpdateFromDTO(entitetIzBaze);
+                
 
                 _context.Polaznici.Update(entitetIzBaze);
                 _context.SaveChanges();
 
-                return StatusCode(StatusCodes.Status200OK,entitetIzBaze);
+                return StatusCode(StatusCodes.Status200OK,
+                    entitetIzBaze.MapPolaznikInsertUpdatedToDTO());
             }
             catch (Exception ex)
             {
