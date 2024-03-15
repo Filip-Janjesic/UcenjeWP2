@@ -35,11 +35,15 @@ function NavBar() {
               >
                 Predavači
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">
+              <NavDropdown.Item 
+              onClick={()=>navigate(RoutesNames.POLAZNICI_PREGLED)}
+              >
                 Polaznici
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
+              <NavDropdown.Item 
+              onClick={()=>navigate(RoutesNames.GRUPE_PREGLED)}
+              >
                 Grupe
               </NavDropdown.Item>
             </NavDropdown>

@@ -92,14 +92,14 @@ namespace EdunovaAPP.Controllers
                 return BadRequest();
             }
 
-            var smjer = _context.Smjerovi.Find(dto.smjer);
+            var smjer = _context.Smjerovi.Find(dto.smjerSifra);
 
             if(smjer== null)
             {
                 return BadRequest();
             }
 
-            var predavac = _context.Predavaci.Find(dto.predavac);
+            var predavac = _context.Predavaci.Find(dto.predavacSifra);
 
             if (predavac == null)
             {
@@ -147,14 +147,14 @@ namespace EdunovaAPP.Controllers
                     return StatusCode(StatusCodes.Status204NoContent, sifra);
                 }
 
-                var smjer = _context.Smjerovi.Find(dto.smjer);
+                var smjer = _context.Smjerovi.Find(dto.smjerSifra);
 
                 if (smjer == null)
                 {
                     return BadRequest();
                 }
 
-                var predavac = _context.Predavaci.Find(dto.predavac);
+                var predavac = _context.Predavaci.Find(dto.predavacSifra);
 
                 if (predavac == null)
                 {

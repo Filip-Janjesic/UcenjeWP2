@@ -31,23 +31,13 @@ namespace EdunovaAPP.Models
 
     
    
-    public record GrupaDTORead( int sifra, string naziv,
-        string smjer , string predavac ,  int brojpolaznika , DateTime? datumpocetka, int? maksimalnopolaznika);
-    /*
-    public class GrupaDTORead
-    {
-        public int? sifra { get; set; }
-        public string? naziv { get; set; }
-        public string? smjer { get; set; }
-        public string? predavac { get; set; }
-        public DateTime? datumpocetka { get; set; }
-        public int? maksimalnopolaznika { get; set; }
-        public int? brojpolaznika { get; set; }
+    public record GrupaDTORead( int sifra, string? naziv,
+        string? smjerNaziv , string? predavacImePrezime ,  int brojpolaznika , DateTime? datumpocetka, int? maksimalnopolaznika);
+    // ako se parametar zove kao svojstvo nekog tipa u toj klasi tada uzima punu putanju klase (npr. EdunovaAPP.Models.Predavac)
 
-    }
-    */
 
-    public record GrupaDTOInsertUpdate( string naziv, int predavac,
-        int smjer,  DateTime? datumpocetka, int? maksimalnopolaznika= 0);
+
+    public record GrupaDTOInsertUpdate( string? naziv, 
+        int? smjerSifra, int? predavacSifra, DateTime? datumpocetka, int? maksimalnopolaznika= 0);
 
 }
