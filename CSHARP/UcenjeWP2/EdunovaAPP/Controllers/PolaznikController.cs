@@ -2,6 +2,7 @@
 using EdunovaAPP.Extensions;
 using EdunovaAPP.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EdunovaAPP.Controllers
 {
@@ -160,6 +161,34 @@ namespace EdunovaAPP.Controllers
                     ex.Message);
             }
 
+        }
+
+
+
+        [HttpGet]
+        [Route("trazi/{uvjet}")]
+        public IActionResult TraziPolaznik(string uvjet)
+        {
+            // ovdje će ići dohvaćanje u bazi
+
+            if (uvjet == null || uvjet.Length < 3)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var polaznici = _context.Polaznici
+                    .Include(p => p.Grupe)
+                    .Where(p => p.Ime.Contains(uvjet) || p.Prezime.Contains(uvjet))
+                    .ToList();
+                return new JsonResult(polaznici.MapPolaznikReadList()); //200
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message); //204
+            }
         }
 
 

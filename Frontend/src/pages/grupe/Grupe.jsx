@@ -67,6 +67,15 @@ export default function Grupe(){
         return (entitet.brojpolaznika / entitet.maksimalnopolaznika) * 100;
       }
 
+      function formatirajDatum(datumpocetka){
+        let mdp = moment.utc(datumpocetka);
+        if(mdp.hour()==0 && mdp.minutes()==0){
+            return mdp.format('DD. MM. YYYY.');
+        }
+        return mdp.format('DD. MM. YYYY. HH:mm');
+        
+      }
+
     return (
 
         <Container>
@@ -96,7 +105,7 @@ export default function Grupe(){
                                 {entitet.datumpocetka==null 
                                 ? 'Nije definirano'
                                 :   
-                                moment.utc(entitet.datumpocetka).format('DD. MM. YYYY. HH:mm')
+                                formatirajDatum(entitet.datumpocetka)
                                 }
                                 </p>
                                 <ProgressBar 

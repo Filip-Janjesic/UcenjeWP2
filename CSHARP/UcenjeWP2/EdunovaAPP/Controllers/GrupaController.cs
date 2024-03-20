@@ -108,7 +108,7 @@ namespace EdunovaAPP.Controllers
 
 
             var entitet = dto.MapGrupaInsertUpdateFromDTO(new Grupa());
-
+            entitet.Polaznici = new List<Polaznik>();
             entitet.Smjer = smjer;
             entitet.Predavac=predavac;
 
@@ -247,6 +247,116 @@ namespace EdunovaAPP.Controllers
                     ex.Message);
             }
         }
+
+
+
+
+        [HttpPost]
+        [Route("{sifra:int}/dodaj/{polaznikSifra:int}")]
+        public IActionResult DodajPolaznika(int sifra, int polaznikSifra)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if (sifra <= 0 || polaznikSifra <= 0)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+
+                var grupa = _context.Grupe
+                    .Include(g => g.Polaznici)
+                    .FirstOrDefault(g => g.Sifra == sifra);
+
+                if (grupa == null)
+                {
+                    return BadRequest();
+                }
+
+                var polaznik = _context.Polaznici.Find(polaznikSifra);
+
+                if (polaznik == null)
+                {
+                    return BadRequest();
+                }
+
+                grupa.Polaznici.Add(polaznik);
+
+                _context.Grupe.Update(grupa);
+                _context.SaveChanges();
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                       StatusCodes.Status503ServiceUnavailable,
+                       ex.Message);
+
+            }
+
+        }
+
+
+
+        [HttpDelete]
+        [Route("{sifra:int}/obrisi/{polaznikSifra:int}")]
+        public IActionResult ObrisiPolaznika(int sifra, int polaznikSifra)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if (sifra <= 0 || polaznikSifra <= 0)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+
+                var grupa = _context.Grupe
+                    .Include(g => g.Polaznici)
+                    .FirstOrDefault(g => g.Sifra == sifra);
+
+                if (grupa == null)
+                {
+                    return BadRequest();
+                }
+
+                var polaznik = _context.Polaznici.Find(polaznikSifra);
+
+                if (polaznik == null)
+                {
+                    return BadRequest();
+                }
+
+
+                grupa.Polaznici.Remove(polaznik);
+
+                _context.Grupe.Update(grupa);
+                _context.SaveChanges();
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                       StatusCodes.Status503ServiceUnavailable,
+                       ex.Message);
+
+            }
+
+        }
+
 
 
 

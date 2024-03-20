@@ -17,15 +17,22 @@
 SELECT name, collation_name FROM sys.databases;
 GO
 -- Doma primjeniti na ime svoje baze 3 puta
-ALTER DATABASE db_a98acf_tjakopec SET SINGLE_USER WITH
+ALTER DATABASE db_a98acf_edunova SET SINGLE_USER WITH
 ROLLBACK IMMEDIATE;
 GO
-ALTER DATABASE db_a98acf_tjakopec COLLATE Croatian_CI_AS;
+ALTER DATABASE db_a98acf_edunova COLLATE Croatian_CI_AS;
 GO
-ALTER DATABASE db_a98acf_tjakopec SET MULTI_USER;
+ALTER DATABASE db_a98acf_edunova SET MULTI_USER;
 GO
 SELECT name, collation_name FROM sys.databases;
 GO
+
+
+drop table clanovi;
+drop table polaznici;
+drop table predavaci;
+drop table grupe;
+drop table smjerovi;
 
 
 create table smjerovi(
