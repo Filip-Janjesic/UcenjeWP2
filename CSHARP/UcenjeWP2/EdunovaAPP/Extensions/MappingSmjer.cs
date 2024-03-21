@@ -33,6 +33,7 @@ namespace EdunovaAPP.Extensions
             entitet.Naziv = dto.naziv;
             entitet.Trajanje = dto.trajanje;
             entitet.Cijena= dto.cijena;
+            entitet.Upisnina= dto.upisnina;
             entitet.Verificiran= dto.verificiran;
             return entitet;
         }

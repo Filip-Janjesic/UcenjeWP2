@@ -24,7 +24,7 @@ namespace EdunovaAPP.Models
 
 
     public record PredavacDTORead(int sifra, string ime, string prezime,
-        string email, string oib, string iban);
+        string email, string oib, string iban, string datoteka);
 
     public record PredavacDTOInsertUpdate(string ime, string prezime,
         string email, string oib, string iban);

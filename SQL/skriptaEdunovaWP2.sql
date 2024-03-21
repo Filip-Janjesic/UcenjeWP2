@@ -29,9 +29,9 @@ GO
 
 
 drop table clanovi;
+drop table grupe;
 drop table polaznici;
 drop table predavaci;
-drop table grupe;
 drop table smjerovi;
 
 
