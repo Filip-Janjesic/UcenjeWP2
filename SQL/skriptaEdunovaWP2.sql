@@ -35,6 +35,10 @@ drop table predavaci;
 drop table smjerovi;
 
 
+
+
+
+
 create table smjerovi(
 sifra int not null primary key identity(1,1),
 naziv varchar(60) not null,
@@ -143,13 +147,13 @@ insert into polaznici (prezime,ime,email) values
 
 
 
-insert into grupe (naziv,smjer,datumpocetka) values
+insert into grupe (naziv,smjer,datumpocetka,maksimalnopolaznika,predavac) values
 -- 1
-('WP1',1,'2023-04-24 17:00:00'),
+('WP1',1,'2023-04-24 17:00:00',15,1),
 -- 2
-('WP2',1,'2023-10-30 17:00:00'),
+('WP2',1,'2023-10-30 17:00:00',30,2),
 -- 3
-('JP28',2,'2023-04-24 19:00:00');
+('JP28',2,'2023-04-24 19:00:00',10,null);
 
 
 insert into clanovi (grupa,polaznik) values
@@ -158,4 +162,11 @@ insert into clanovi (grupa,polaznik) values
 (2,15),(2,16),(2,17),(2,18),(2,19),(2,20),(2,21),
 (2,22),(2,23),(2,24),(2,25),(2,26),(2,27),(2,28),
 (2,29),(2,30);
+
+insert into clanovi (grupa,polaznik) values
+(1,5),(1,10),(1,12),(1,13),(1,27),(1,30);
+
+insert into clanovi (grupa,polaznik) values
+(3,5),(3,10),(3,12),(3,13);
+
 

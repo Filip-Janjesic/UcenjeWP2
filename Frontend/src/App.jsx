@@ -14,12 +14,13 @@ import Predavaci from "./pages/predavaci/Predavaci"
 import PredavaciDodaj from "./pages/predavaci/PredavaciDodaj"
 import PredavaciPromjeni from "./pages/predavaci/PredavaciPromjeni"
 
-
 import Polaznici from "./pages/polaznici/Polaznici"
 import PolazniciDodaj from "./pages/polaznici/PolazniciDodaj"
 import PolazniciPromjeni from "./pages/polaznici/PolazniciPromjeni"
+
 import Grupe from "./pages/grupe/Grupe"
 import GrupeDodaj from "./pages/grupe/GrupeDodaj"
+import GrupePromjeni from "./pages/grupe/GrupePromjeni"
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
 
           <Route path={RoutesNames.GRUPE_PREGLED} element={<Grupe />} />
           <Route path={RoutesNames.GRUPE_NOVI} element={<GrupeDodaj />} />
+          <Route path={RoutesNames.GRUPE_PROMJENI} element={<GrupePromjeni />} />
         </>
       </Routes>
     </>

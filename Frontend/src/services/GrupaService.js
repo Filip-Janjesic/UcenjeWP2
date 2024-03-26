@@ -73,10 +73,53 @@ async function obrisi(sifra) {
   }
 
 
+  async function getPolaznici(sifra){
+    return await httpService.get('/' + naziv + '/Polaznici/' + sifra)
+    .then((res)=>{
+        if(App.DEV) console.table(res.data);
+  
+        return res;
+    }).catch((e)=>{
+        console.log(e);
+    });
+  }
+  
+  async function dodajPolaznika(grupa, polaznik) {
+    const odgovor = await httpService
+      .post('/' + naziv + '/' + grupa + '/dodaj/' + polaznik)
+      .then(() => {
+        return { ok: true, poruka: 'Dodao uspješno' };
+      })
+      .catch((error) => {
+        console.log(error);
+        return { ok: false, poruka: error.response.data };
+      });
+  
+    return odgovor;
+  }
+  
+  async function obrisiPolaznika(grupa, polaznik) {
+    const odgovor = await httpService
+      .delete('/'+naziv+'/' + grupa + '/obrisi/' + polaznik)
+      .then(() => {
+        return { ok: true, poruka: 'Obrisao uspješno' };
+      })
+      .catch((error) => {
+        console.log(error);
+        return { ok: false, poruka: error.response.data };
+      });
+  
+    return odgovor;
+  }
+
+
 export default{
     get,
     obrisi,
     dodaj,
     getBySifra,
-    promjeni
+    promjeni,
+    getPolaznici,
+    dodajPolaznika,
+    obrisiPolaznika
 };

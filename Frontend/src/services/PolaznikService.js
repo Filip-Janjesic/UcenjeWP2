@@ -72,11 +72,23 @@ async function obrisi(sifra) {
     return odgovor;
   }
 
+  
+async function traziPolaznik(uvjet) {
+  return await httpService
+    .get('/' + naziv +'/trazi/' + uvjet)
+    .then((res) => res)
+    .catch((e) => {
+      console.log(e);
+      return { ok: false, poruka: e.response.data };
+    });
+}
+
 
 export default{
     get,
     obrisi,
     dodaj,
     getBySifra,
-    promjeni
+    promjeni,
+    traziPolaznik
 };

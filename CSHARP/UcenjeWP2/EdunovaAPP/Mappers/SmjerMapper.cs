@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EdunovaAPP.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace EdunovaAPP.Mappers
 {
@@ -10,6 +11,8 @@ namespace EdunovaAPP.Mappers
             return new Mapper(
                 new MapperConfiguration(c =>
                 {
+                    c.AllowNullDestinationValues = true;
+                    //c.AllowNullCollections = true;
                     c.CreateMap<Smjer, SmjerDTORead>();
                 })
                 );
