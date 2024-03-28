@@ -1,8 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SQL"
+    "\\CSHARP",
+    "\\CSHARP\\UcenjeWP2",
+    "\\CSHARP\\UcenjeWP2\\EdunovaAPP",
+    "\\CSHARP\\UcenjeWP2\\EdunovaAPP\\Properties",
+    "\\CSHARP\\UcenjeWP2\\EdunovaAPP\\Properties\\PublishProfiles",
+    "\\CSHARP\\UcenjeWP2\\EdunovaAPP\\wwwroot"
   ],
-  "SelectedNode": "\\SQL\\frizerski.sql",
+  "SelectedNode": "\\CSHARP\\UcenjeWP2\\EdunovaAPP\\wwwroot\\index.html",
   "PreviewInSolutionExplorer": false
 }
