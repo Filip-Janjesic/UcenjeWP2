@@ -33,9 +33,19 @@ drop table grupe;
 drop table polaznici;
 drop table predavaci;
 drop table smjerovi;
+drop table operateri;
 
 
 
+create table operateri(
+sifra int not null primary key identity(1,1),
+email varchar(50) not null,
+lozinka varchar(200) not null
+);
+
+-- Lozinka edunova generirana pomoću https://bcrypt-generator.com/
+insert into operateri values ('edunova@edunova.hr',
+'$2a$13$JpDMSmBb5sbGnwDOnsacceDwXBBDDJTZ4bsXlO7DA9sHbIXziu76G');
 
 
 
@@ -83,13 +93,26 @@ grupa int not null,
 polaznik int not null
 );
 
+
+create table oznake(
+sifra int not null primary key identity(1,1),
+naziv varchar(50) not null
+);
+
+create table smjerovioznake(
+sifra int not null primary key identity(1,1),
+smjer int not null,
+oznaka int not null,
+napomena varchar(50)
+);
+
 -- vanjski ključevi
 alter table grupe add foreign key (smjer) references smjerovi(sifra);
 alter table grupe add foreign key (predavac) references predavaci(sifra);
 alter table clanovi add foreign key (grupa) references grupe(sifra);
 alter table clanovi add foreign key (polaznik) references polaznici(sifra);
-
-
+alter table smjerovioznake add foreign key (smjer) references smjerovi(sifra);
+alter table smjerovioznake add foreign key (oznaka) references oznake(sifra);
 
 -- Za početnike najbolja opcija
 -- Ova naredba je unijela jedan red u tablicu

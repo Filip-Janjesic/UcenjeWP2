@@ -1,169 +1,22 @@
 ﻿using EdunovaAPP.Data;
-using EdunovaAPP.Extensions;
+using EdunovaAPP.Mappers;
 using EdunovaAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace EdunovaAPP.Controllers
 {
    
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class PolaznikController : ControllerBase
+    public class PolaznikController : EdunovaController<Polaznik, PolaznikDTORead, PolaznikDTOInsertUpdate>
     {
-       
-        private readonly EdunovaContext _context;
-       
-        public PolaznikController(EdunovaContext context)
+        public PolaznikController(EdunovaContext context) : base(context)
         {
-            _context = context;
+            DbSet = _context.Polaznici;
+            _mapper = new MappingPolaznik();
         }
-
-       
-        [HttpGet]
-        public IActionResult Get()
-        {
-            // kontrola ukoliko upit nije valjan
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                var lista = _context.Polaznici.ToList();
-                if(lista == null || lista.Count == 0)
-                {
-                    return new EmptyResult();
-                }
-                return new JsonResult(lista.MapPolaznikReadList());
-            }catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, 
-                    ex.Message);
-            } 
-        }
-
-        [HttpGet]
-        [Route("{sifra:int}")]
-        public IActionResult GetBySifra(int sifra)
-        {
-            // kontrola ukoliko upit nije valjan
-            if (!ModelState.IsValid || sifra <= 0)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                var p = _context.Polaznici.Find(sifra);
-                if (p == null)
-                {
-                    return new EmptyResult();
-                }
-                return new JsonResult(p.MapPolaznikInsertUpdatedToDTO());
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    ex.Message);
-            }
-        }
-
-
-        [HttpPost]
-        public IActionResult Post(PolaznikDTOInsertUpdate dto)
-        {
-            if (!ModelState.IsValid || dto == null)
-            {
-                return BadRequest();
-            }
-            try
-            {
-                var entitet = dto.MapPolaznikInsertUpdateFromDTO(new Polaznik());
-                _context.Polaznici.Add(entitet);
-                _context.SaveChanges();
-                return StatusCode(StatusCodes.Status201Created, entitet.MapPolaznikReadToDTO());
-            }catch(Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    ex.Message);
-            }
-        }
-
-       
-        [HttpPut]
-        [Route("{sifra:int}")]
-        public IActionResult Put(int sifra, PolaznikDTOInsertUpdate dto)
-        {
-            if(sifra<=0 || !ModelState.IsValid || dto == null)
-            {
-                return BadRequest();
-            }
-
-
-            try
-            {
-
-
-                var entitetIzBaze = _context.Polaznici.Find(sifra);
-
-                if (entitetIzBaze == null)
-                {
-                    return StatusCode(StatusCodes.Status204NoContent,sifra);
-                }
-
-
-                entitetIzBaze = dto.MapPolaznikInsertUpdateFromDTO(entitetIzBaze);
-                
-
-                _context.Polaznici.Update(entitetIzBaze);
-                _context.SaveChanges();
-
-                return StatusCode(StatusCodes.Status200OK,
-                    entitetIzBaze.MapPolaznikInsertUpdatedToDTO());
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    ex.Message);
-            }
-
-        }
-
-       
-        [HttpDelete]
-        [Route("{sifra:int}")]
-        [Produces("application/json")]
-        public IActionResult Delete(int sifra)
-        {
-            if(!ModelState.IsValid || sifra <= 0)
-            {
-                return BadRequest();
-            }
-
-            try
-            {
-                var entitetIzbaze = _context.Polaznici.Find(sifra);
-
-                if (entitetIzbaze == null)
-                {
-                    return StatusCode(StatusCodes.Status204NoContent, sifra);
-                }
-
-                _context.Polaznici.Remove(entitetIzbaze); 
-                _context.SaveChanges();
-
-                return new JsonResult(new { poruka = "Obrisano" }); // ovo nije baš najbolja praksa ali da znake kako i to može
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                    ex.Message);
-            }
-
-        }
-
-
 
         [HttpGet]
         [Route("trazi/{uvjet}")]
@@ -176,22 +29,118 @@ namespace EdunovaAPP.Controllers
                 return BadRequest(ModelState);
             }
 
+            // ivan se PROBLEM riješiti višestruke uvjete
+            uvjet = uvjet.ToLower();
             try
             {
-                var polaznici = _context.Polaznici
-                    .Include(p => p.Grupe)
-                    .Where(p => p.Ime.Contains(uvjet) || p.Prezime.Contains(uvjet))
-                    .ToList();
-                return new JsonResult(polaznici.MapPolaznikReadList()); //200
+                IEnumerable<Polaznik> query = _context.Polaznici;
+                var niz = uvjet.Split(" ");
+
+                foreach (var s in uvjet.Split(" "))
+                {
+                    query = query.Where(p => p.Ime.ToLower().Contains(s) || p.Prezime.ToLower().Contains(s));
+                }
+
+
+                var polaznici = query.ToList();
+
+                return new JsonResult(_mapper.MapReadList(polaznici)); 
 
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, e.Message); //204
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("postaviSliku/{sifra:int}")]
+        public IActionResult PostaviSliku(int sifra, SlikaDTO slika)
+        {
+            if (sifra <= 0)
+            {
+                return BadRequest("Šifra mora biti veća od nula (0)");
+            }
+            if (slika.Base64 == null || slika.Base64?.Length == 0)
+            {
+                return BadRequest("Slika nije postavljena");
+            }
+            var p = _context.Polaznici.Find(sifra);
+            if (p == null)
+            {
+                return BadRequest("Ne postoji polaznik s šifrom " + sifra + ".");
+            }
+            try
+            {
+                var ds = Path.DirectorySeparatorChar;
+                string dir = Path.Combine(Directory.GetCurrentDirectory()
+                    + ds + "wwwroot" + ds + "slike" + ds + "polaznici");
+
+                if (!System.IO.Directory.Exists(dir))
+                {
+                    System.IO.Directory.CreateDirectory(dir);
+                }
+                var putanja = Path.Combine(dir + ds + sifra + ".png");
+                System.IO.File.WriteAllBytes(putanja, Convert.FromBase64String(slika.Base64));
+                return Ok("Uspješno pohranjena slika");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
         }
 
 
+        [HttpGet]
+        [Route("traziStranicenje/{stranica}")]
+        public IActionResult TraziPolaznikStranicenje(int stranica, string uvjet = "")
+        {
+            var poStranici = 8;
+            uvjet = uvjet.ToLower();
+            try
+            {
+                var polaznici = _context.Polaznici
+                    .Where(p => EF.Functions.Like(p.Ime.ToLower(), "%" + uvjet + "%")
+                                || EF.Functions.Like(p.Prezime.ToLower(), "%" + uvjet + "%"))
+                    .Skip((poStranici * stranica) - poStranici)
+                    .Take(poStranici)
+                    .OrderBy(p => p.Prezime)
+                    .ToList();
+
+
+                return new JsonResult(_mapper.MapReadList(polaznici));
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+
+
+        protected override void KontrolaBrisanje(Polaznik entitet)
+        {
+            var entitetIzbaze = _context.Polaznici.Include(x => x.Grupe).FirstOrDefault(x => x.Sifra == entitet.Sifra);
+
+            if (entitetIzbaze == null)
+            {
+                throw new Exception("Ne postoji polaznik s šifrom " + entitet.Sifra + " u bazi");
+            }
+
+
+            if (entitetIzbaze.Grupe != null && entitetIzbaze.Grupe.Count() > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Polaznik se ne može obrisati jer je postavljen na grupama: ");
+                foreach (var e in entitetIzbaze.Grupe)
+                {
+                    sb.Append(e.Naziv).Append(", ");
+                }
+
+                throw new Exception(sb.ToString().Substring(0, sb.ToString().Length - 2));
+            }
+        }
 
     }
 }

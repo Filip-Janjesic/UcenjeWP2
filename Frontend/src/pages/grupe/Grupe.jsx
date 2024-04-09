@@ -7,74 +7,72 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import moment from "moment";
 
-import GrupaService from "../../services/GrupaService";
+import Service from "../../services/GrupaService";
 import { RoutesNames } from "../../constants";
-
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 export default function Grupe(){
     const [grupe,setGrupe] = useState();
     let navigate = useNavigate(); 
+    const { showLoading, hideLoading } = useLoading();
+
+    const { prikaziError } = useError();
 
     async function dohvatiGrupe(){
-        await GrupaService.get()
-        .then((res)=>{
+        showLoading();
+        const odgovor = await Service.get('Grupa');
+        if(!odgovor.ok){
+            hideLoading();
+            prikaziError(odgovor.podaci);
+            return;
+        }
+        setGrupe(odgovor.podaci);
+        hideLoading();
+    }
 
-            let grupe = res.data;
-            grupe.forEach(e => {
-                if(e.maksimalnopolaznika==null){
-                    e.maksimalnopolaznika=0;
-                }
-
-            });
-            setGrupe(grupe);
-        })
-        .catch((e)=>{
-            alert(e);
-        });
+    async function obrisiGrupu(sifra) {
+        showLoading();
+        const odgovor = await Service.obrisi('Grupa',sifra);
+        hideLoading();
+        prikaziError(odgovor.podaci);
+        if (odgovor.ok){
+            dohvatiGrupe();
+        }
     }
 
     useEffect(()=>{
         dohvatiGrupe();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
 
+    function progressStatus(entitet){
+    return entitet.brojpolaznika + " polaznika od ukupno " +
+    entitet.maksimalnopolaznika + " polaznika na grupi.";
+    }
 
-    async function obrisiGrupu(sifra) {
-        const odgovor = await GrupaService.obrisi(sifra);
+    function progressLabel(entitet){
+    return entitet.brojpolaznika + "/" +
+    entitet.maksimalnopolaznika;
+    }
+
+    function progressPostotak(entitet){
+    if (entitet.maksimalnopolaznika==0 || entitet.brojpolaznika==0){
+        return 0;
+    }
+
+    return (entitet.brojpolaznika / entitet.maksimalnopolaznika) * 100;
+    }
+
+    function formatirajDatum(datumpocetka){
+    let mdp = moment.utc(datumpocetka);
+    if(mdp.hour()==0 && mdp.minutes()==0){
+        return mdp.format('DD. MM. YYYY.');
+    }
+    return mdp.format('DD. MM. YYYY. HH:mm');
     
-        if (odgovor.ok) {
-            dohvatiGrupe();
-        } else {
-          alert(odgovor.poruka);
-        }
-      }
-
-      function progressStatus(entitet){
-        return entitet.brojpolaznika + " polaznika od ukupno " +
-        entitet.maksimalnopolaznika + " polaznika na grupi.";
-      }
-
-      function progressLabel(entitet){
-        return entitet.brojpolaznika + "/" +
-        entitet.maksimalnopolaznika;
-      }
-
-      function progressPostotak(entitet){
-        if (entitet.maksimalnopolaznika==0 || entitet.brojpolaznika==0){
-            return 0;
-        }
-
-        return (entitet.brojpolaznika / entitet.maksimalnopolaznika) * 100;
-      }
-
-      function formatirajDatum(datumpocetka){
-        let mdp = moment.utc(datumpocetka);
-        if(mdp.hour()==0 && mdp.minutes()==0){
-            return mdp.format('DD. MM. YYYY.');
-        }
-        return mdp.format('DD. MM. YYYY. HH:mm');
-        
-      }
+    }
 
     return (
 

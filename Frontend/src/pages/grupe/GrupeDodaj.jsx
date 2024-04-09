@@ -1,13 +1,15 @@
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Container, Form} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import moment from "moment";
 
 
 import Service from '../../services/GrupaService';
-import SmjerService from '../../services/SmjerService';
-import PredavacService from '../../services/PredavacService';
 import { RoutesNames } from '../../constants';
+import useError from '../../hooks/useError';
+import InputText from '../../components/InputText';
+import Akcije from '../../components/Akcije';
+import moment from 'moment';
+import useLoading from '../../hooks/useLoading';
 
 
 
@@ -20,41 +22,51 @@ export default function GrupeDodaj() {
   const [predavaci, setPredavaci] = useState([]);
   const [predavacSifra, setPredavacSifra] = useState(0);
 
+  const { prikaziError } = useError();
+  const { showLoading, hideLoading } = useLoading();
+
   async function dohvatiSmjerove(){
-    await SmjerService.getSmjerovi().
-      then((odgovor)=>{
-        setSmjerovi(odgovor.data);
-        setSmjerSifra(odgovor.data[0].sifra);
-      });
+    
+    const odgovor = await Service.get('Smjer');
+    if(!odgovor.ok){
+      prikaziError(odgovor.podaci);
+      return;
+    }
+    setSmjerovi(odgovor.podaci);
+    setSmjerSifra(odgovor.podaci[0].sifra);
   }
 
   async function dohvatiPredavaci(){
-    await PredavacService.get().
-      then((o)=>{
-        setPredavaci(o.data);
-        setPredavacSifra(o.data[0].sifra);
-      });
+    const odgovor = await Service.get('Predavac');
+    if(!odgovor.ok){
+      prikaziError(odgovor.podaci);
+        return;
+    }
+    setPredavaci(odgovor.podaci);
+    setPredavacSifra(odgovor.podaci[0].sifra);
   }
 
   async function ucitaj(){
+    showLoading();
     await dohvatiSmjerove();
     await dohvatiPredavaci();
+    hideLoading();
   }
 
   useEffect(()=>{
     ucitaj();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   async function dodaj(e) {
-    //console.log(e);
-
-    const odgovor = await Service.dodaj(e);
-    if (odgovor.ok) {
+    showLoading();
+    const odgovor = await Service.dodaj('Grupa',e);
+    hideLoading();
+    if(odgovor.ok){
       navigate(RoutesNames.GRUPE_PREGLED);
-    } else {
-      alert(odgovor.poruka.errors);
+      return
     }
-    
+    prikaziError(odgovor.podaci); 
   }
 
   function handleSubmit(e) {
@@ -62,24 +74,19 @@ export default function GrupeDodaj() {
 
     const podaci = new FormData(e.target);
 
-    //console.log(podaci.get('datum'));
-    //console.log(podaci.get('vrijeme'));
-
     if(podaci.get('datum')=='' && podaci.get('vrijeme')!=''){
       alert('Ako postavljate vrijeme morate i datum');
       return;
     }
-    let datumpocetka='';
-    if(podaci.get('datum')!='' && podaci.get('vrijeme')==''){
-      datumpocetka = podaci.get('datum') + 'T00:00:00.000Z';
-    }else{
-      datumpocetka = podaci.get('datum') + 'T' + podaci.get('vrijeme') + ':00.000Z';
+    let datumpocetka=null;
+    if(podaci.get('datum')!=''){
+      if (podaci.get('vrijeme')!=''){
+        datumpocetka = moment.utc(podaci.get('datum') + ' ' + podaci.get('vrijeme'));
+      }else{
+        datumpocetka = moment.utc(podaci.get('datum'));
+      }
+      
     }
-
-
-
-    
-    //console.log(datumpocetka);
 
     dodaj({
       naziv: podaci.get('naziv'),
@@ -97,30 +104,13 @@ export default function GrupeDodaj() {
         return e.email;
       }
     }
-    /*
-    predavaci.forEach(e => {
-      if(e.sifra==predavacSifra){
-        console.log(e);
-        return e.email;
-      }
-    });
-    */
-    //return 'Pero';
   }
 
   return (
     <Container className='mt-4'>
       <Form onSubmit={handleSubmit}>
-        <Form.Group className='mb-3' controlId='naziv'>
-          <Form.Label>Naziv</Form.Label>
-          <Form.Control
-            type='text'
-            name='naziv'
-            placeholder='Naziv grupe'
-            maxLength={255}
-            required
-          />
-        </Form.Group>
+
+        <InputText atribut='naziv' vrijednost='' />
 
         <Form.Group className='mb-3' controlId='datum'>
           <Form.Label>Datum</Form.Label>
@@ -168,29 +158,8 @@ export default function GrupeDodaj() {
           <Form.Label>{oibPredavaca()}</Form.Label>
         </Form.Group>
 
-        <Form.Group className='mb-3' controlId='maksimalnopolaznika'>
-          <Form.Label>Maksimalno polaznika</Form.Label>
-          <Form.Control
-            type='number'
-            name='maksimalnopolaznika'
-            placeholder='20'
-          />
-        </Form.Group>
-
-       
-
-        <Row>
-          <Col>
-            <Link className='btn btn-danger gumb' to={RoutesNames.GRUPE_PREGLED}>
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button variant='primary' className='gumb' type='submit'>
-              Dodaj Grupu
-            </Button>
-          </Col>
-        </Row>
+        <InputText atribut='maksimalnopolaznika' vrijednost='' />
+        <Akcije odustani={RoutesNames.GRUPE_PREGLED} akcija='Dodaj grupu' /> 
       </Form>
     </Container>
   );

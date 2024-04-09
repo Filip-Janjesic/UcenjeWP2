@@ -13,20 +13,17 @@ namespace EdunovaAPP.Models
         /// <summary>
         /// Naziv u bazi
         /// </summary>
-        [Required(ErrorMessage ="Naziv obavezno")]
         public string? Naziv { get; set; }
 
         /// <summary>
         /// Trajanje u satima
         /// </summary>
-        [Range(30,500,ErrorMessage ="{0} mora biti između {1} i {2}")]
         [Column("brojsati")]
         public int? Trajanje { get; set; }
 
         /// <summary>
         /// Cijena u eurima
         /// </summary>
-        [Range(0, 10000, ErrorMessage = "Vrijednost {0} mora biti između {1} i {2}")]
         public decimal? Cijena { get; set; }
 
         /// <summary>

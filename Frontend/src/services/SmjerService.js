@@ -1,68 +1,32 @@
-import { App } from "../constants"
-import { httpService } from "./httpService";
+import  { httpService, obradiGresku, obradiUspjeh, obradiUspjehBrisanje,get,obrisi,dodaj,getBySifra,promjeni } from "./httpService";
 
-async function getSmjerovi(){
-    return await httpService.get('/Smjer')
-    .then((res)=>{
-        if(App.DEV) console.table(res.data);
 
-        return res;
-    }).catch((e)=>{
-        console.log(e);
-    });
+async function getOznake(sifra){
+    return await httpService.get('/Smjer/Oznake/' + sifra).then((res)=>{return obradiUspjeh(res);}).catch((e)=>{ return obradiGresku(e);});
+  }
+
+  async function obrisiOznaku(sifra){
+    return await httpService.delete('/Smjer/ObrisiOznaku/' + sifra)
+        .then((res)=>{
+            return obradiUspjehBrisanje(res);
+        }).catch((e)=>{
+            return obradiGresku(e);
+        });
 }
 
-async function obrisiSmjer(sifra){
-    return await httpService.delete('/Smjer/' + sifra)
-    .then((res)=>{
-        return {ok: true, poruka: res};
-    }).catch((e)=>{
-        console.log(e);
-    });
-}
-
-async function dodajSmjer(smjer){
-    const odgovor = await httpService.post('/Smjer',smjer)
-    .then(()=>{
-        return {ok: true, poruka: 'Uspješno dodano'}
-    })
-    .catch((e)=>{
-        console.log(e.response.data.errors);
-        return {ok: false, poruka: 'Greška'}
-    });
-    return odgovor;
-}
-
-async function promjeniSmjer(sifra,smjer){
-    const odgovor = await httpService.put('/Smjer/'+sifra,smjer)
-    .then(()=>{
-        return {ok: true, poruka: 'Uspješno promjnjeno'}
-    })
-    .catch((e)=>{
-        console.log(e.response.data.errors);
-        return {ok: false, poruka: 'Greška'}
-    });
-    return odgovor;
-}
-
-async function getBySifra(sifra){
-    return await httpService.get('/Smjer/' + sifra)
-    .then((res)=>{
-        if(App.DEV) console.table(res.data);
-
-        return res;
-    }).catch((e)=>{
-        console.log(e);
-        return {poruka: e}
-    });
-}
+async function dodajOznaku(smjerOznaka) {
+    return await httpService.post('/Smjer/DodajOznaku/',smjerOznaka).then((res)=>{return obradiUspjeh(res);}).catch((e)=>{ return obradiGresku(e);});
+  }
 
 
 
 export default{
-    getSmjerovi,
-    obrisiSmjer,
-    dodajSmjer,
-    promjeniSmjer,
-    getBySifra
+    get,
+    obrisi,
+    dodaj,
+    promjeni,
+    getBySifra,
+    getOznake,
+    obrisiOznaku,
+    dodajOznaku
 };

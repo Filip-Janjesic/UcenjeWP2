@@ -8,3 +8,4 @@ npm install react-icons
 npm install moment¸
 npm install react-bootstrap-typeahead
 npm install highcharts highcharts-react-official
+npm install react-cropper

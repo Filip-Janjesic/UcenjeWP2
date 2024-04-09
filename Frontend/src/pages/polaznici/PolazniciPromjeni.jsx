@@ -1,41 +1,65 @@
-import { useEffect, useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import PolaznikService from '../../services/PolaznikService';
-import { RoutesNames } from '../../constants';
+import { useEffect, useRef, useState } from 'react';
+import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import Service from '../../services/PolaznikService';
+import { App, RoutesNames } from '../../constants';
+import { dohvatiPorukeAlert } from '../../services/httpService';
+import InputText from '../../components/InputText';
+import Akcije from '../../components/Akcije';
+import Cropper from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
+import nepoznato from '../../assets/nepoznato.png'; 
+import useLoading from '../../hooks/useLoading';
+import useError from '../../hooks/useError';
 
 export default function PolazniciPromjeni() {
   const [polaznik, setPolaznik] = useState({});
 
+  const [trenutnaSlika, setTrenutnaSlika] = useState('');
+  const [slikaZaCrop, setSlikaZaCrop] = useState('');
+  const [slikaZaServer, setSlikaZaServer] = useState('');
+  const cropperRef = useRef(null);
+
   const routeParams = useParams();
   const navigate = useNavigate();
+  const { prikaziError } = useError();
+  const { showLoading, hideLoading } = useLoading();
 
 
   async function dohvatiPolaznik() {
-
-    await PolaznikService
-      .getBySifra(routeParams.sifra)
-      .then((response) => {
-        console.log(response);
-        setPolaznik(response.data);
-      })
-      .catch((err) => alert(err.poruka));
-
+    showLoading();
+    const odgovor = await Service.getBySifra('Polaznik',routeParams.sifra);
+    if(!odgovor.ok){
+      hideLoading();
+      prikaziError(odgovor.podaci);
+      return;
+    }
+    setPolaznik(odgovor.podaci);
+    //Date.now je zbog toga što se src na image komponenti cache-ira
+    //pa kad promjenimo sliku url ostane isti i trenutna slika se ne updatea
+    if(odgovor.podaci.slika!=null){
+      setTrenutnaSlika(App.URL + odgovor.podaci.slika + `?${Date.now()}`);
+    }else{
+      setTrenutnaSlika(nepoznato);
+    }
+    hideLoading();
   }
 
   useEffect(() => {
     dohvatiPolaznik();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function promjeniPolaznik(polaznik) {
-    const odgovor = await PolaznikService.promjeni(routeParams.sifra, polaznik);
-
-    if (odgovor.ok) {
+    showLoading();
+    const odgovor = await Service.promjeni('Polaznik',routeParams.sifra, polaznik);
+    if(odgovor.ok){
+      hideLoading();
       navigate(RoutesNames.POLAZNICI_PREGLED);
-    } else {
-      alert(odgovor.poruka);
-
+      return;
     }
+    alert(dohvatiPorukeAlert(odgovor.podaci));
+    hideLoading();
   }
 
   function handleSubmit(e) {
@@ -47,78 +71,112 @@ export default function PolazniciPromjeni() {
       prezime: podaci.get('prezime'),
       oib: podaci.get('oib'),
       email: podaci.get('email'),
-      brojugovora: podaci.get('brojugovora')
+      brojugovora: podaci.get('brojugovora'),
+      slika: ''
     });
+  }
+
+
+
+  function onCrop() {
+    setSlikaZaServer(cropperRef.current.cropper.getCroppedCanvas().toDataURL());
+  }
+
+  function onChangeImage(e) {
+    e.preventDefault();
+
+    let files;
+    if (e.dataTransfer) {
+      files = e.dataTransfer.files;
+    } else if (e.target) {
+      files = e.target.files;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setSlikaZaCrop(reader.result);
+    };
+    try {
+      reader.readAsDataURL(files[0]);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function spremiSliku() {
+    showLoading();
+    const base64 = slikaZaServer;
+
+    const odgovor = await Service.postaviSliku(routeParams.sifra, {Base64: base64.replace('data:image/png;base64,', '')});
+    if(!odgovor.ok){
+      hideLoading();
+      prikaziError(odgovor.podaci);
+    }
+    //Date.now je zbog toga što se src na image komponenti cache-ira
+    //pa kad promjenimo sliku url ostane isti i trenutna slika se ne updatea
+    setTrenutnaSlika(slikaZaServer);
+    hideLoading();
   }
 
   return (
     <Container className='mt-4'>
-      <Form onSubmit={handleSubmit}>
+       <Row>
+        <Col key='1' sm={12} lg={6} md={6}>
+          <Form onSubmit={handleSubmit}>
+            <InputText atribut='ime' vrijednost={polaznik.ime} />
+            <InputText atribut='prezime' vrijednost={polaznik.prezime} />
+            <InputText atribut='oib' vrijednost={polaznik.oib} />
+            <InputText atribut='email' vrijednost={polaznik.email} />
+            <InputText atribut='brojugovora' vrijednost={polaznik.brojugovora} />
+            <Akcije odustani={RoutesNames.POLAZNICI_PREGLED} akcija='Promjeni polaznika' /> 
+          </Form>
+          <Row className='mb-4'>
+              <Col key='1' sm={12} lg={6} md={12}>
+                <p className='form-label'>Trenutna slika</p>
+                <Image
+                  //za lokalni development
+                  //src={'https://edunovawp1.eu/' + trenutnaSlika}
+                  src={trenutnaSlika}
+                  className='slika'
+                />
+              </Col>
+              <Col key='2' sm={12} lg={6} md={12}>
+                {slikaZaServer && (
+                  <>
+                    <p className='form-label'>Nova slika</p>
+                    <Image
+                      src={slikaZaServer || slikaZaCrop}
+                      className='slika'
+                    />
+                  </>
+                )}
+              </Col>
+            </Row>
+        </Col>
+        <Col key='2' sm={12} lg={6} md={6}>
+        <input className='mb-3' type='file' onChange={onChangeImage} />
+              <Button disabled={!slikaZaServer} onClick={spremiSliku}>
+                Spremi sliku
+              </Button>
 
-      <Form.Group className='mb-3' controlId='ime'>
-          <Form.Label>Ime</Form.Label>
-          <Form.Control
-            type='text'
-            name='ime'
-            defaultValue={polaznik.ime}
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='prezime'>
-          <Form.Label>Prezime</Form.Label>
-          <Form.Control
-            type='text'
-            name='prezime'
-            defaultValue={polaznik.prezime}
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='oib'>
-          <Form.Label>OIB</Form.Label>
-          <Form.Control
-            type='text'
-            name='oib'
-            defaultValue={polaznik.oib}
-            maxLength={11}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='email'>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type='email'
-            name='email'
-            defaultValue={polaznik.email}
-            maxLength={255}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='brojugovora'>
-          <Form.Label>Broj ugovora</Form.Label>
-          <Form.Control
-            type='text'
-            name='brojugovora'
-            defaultValue={polaznik.brojugovora}
-          />
-        </Form.Group>
-
-        <Row>
-          <Col>
-            <Link className='btn btn-danger gumb' to={RoutesNames.POLAZNICI_PREGLED}>
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button variant='primary' className='gumb' type='submit'>
-              Promjeni Polaznika
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+              <Cropper
+                src={slikaZaCrop}
+                style={{ height: 400, width: '100%' }}
+                initialAspectRatio={1}
+                guides={true}
+                viewMode={1}
+                minCropBoxWidth={50}
+                minCropBoxHeight={50}
+                cropBoxResizable={false}
+                background={false}
+                responsive={true}
+                checkOrientation={false}
+                cropstart={onCrop}
+                cropend={onCrop}
+                ref={cropperRef}
+              />
+        </Col>
+      </Row>
+      
     </Container>
   );
 }

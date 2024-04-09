@@ -1,33 +1,49 @@
 import { useEffect, useState } from "react";
 import {  Button, Container, Table } from "react-bootstrap";
-import SmjerService from "../../services/SmjerService";
+import Service from "../../services/SmjerService";
 import { NumericFormat } from "react-number-format";
 import { GrValidate } from "react-icons/gr";
 import { IoIosAdd } from "react-icons/io";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
+import useError from "../../hooks/useError";
+import useLoading from "../../hooks/useLoading";
 
 
 export default function Smjerovi(){
     const [smjerovi,setSmjerovi] = useState();
     const navigate = useNavigate();
+    const { prikaziError } = useError();
+    const { showLoading, hideLoading } = useLoading();
 
     async function dohvatiSmjerove(){
-        await SmjerService.getSmjerovi()
-        .then((res)=>{
-            setSmjerovi(res.data);
-        })
-        .catch((e)=>{
-            alert(e);
-        });
+        showLoading();
+        const odgovor = await Service.get('Smjer');
+        if(!odgovor.ok){
+            prikaziError(odgovor.podaci);
+            return;
+        }
+        setSmjerovi(odgovor.podaci);
+        hideLoading();
+    }
+
+    async function obrisiSmjer(sifra){
+        showLoading();
+        const odgovor = await Service.obrisi('Smjer',sifra);
+        prikaziError(odgovor.podaci);
+        if (odgovor.ok){
+            dohvatiSmjerove();
+        }
+        hideLoading();
     }
      // Ovo se poziva dvaput u dev ali jednom u produkciji
     // https://stackoverflow.com/questions/60618844/react-hooks-useeffect-is-called-twice-even-if-an-empty-array-is-used-as-an-ar
     useEffect(()=>{
         dohvatiSmjerove();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
-
+    
     function verificiran(smjer){
         if (smjer.verificiran==null) return 'gray';
         if(smjer.verificiran) return 'green';
@@ -39,17 +55,6 @@ export default function Smjerovi(){
         if(smjer.verificiran) return 'Verificiran';
         return 'NIJE verificiran';
     }
-
-    async function obrisiSmjer(sifra){
-        const odgovor = await SmjerService.obrisiSmjer(sifra);
-        if (odgovor.ok){
-            alert(odgovor.poruka.data.poruka);
-            dohvatiSmjerove();
-        }
-        
-    }
-
-
 
     return (
 

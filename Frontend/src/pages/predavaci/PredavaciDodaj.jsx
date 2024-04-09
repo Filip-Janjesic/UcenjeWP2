@@ -1,20 +1,24 @@
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
-import PredavacService from '../../services/PredavacService';
+import { Container, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import Service from '../../services/PredavacService';
 import { RoutesNames } from '../../constants';
+import useError from '../../hooks/useError';
+import InputText from '../../components/InputText';
+import Akcije from '../../components/Akcije';
 
 
 export default function PredavaciDodaj() {
   const navigate = useNavigate();
+  const { prikaziError } = useError();
 
 
   async function dodajPredavac(Predavac) {
-    const odgovor = await PredavacService.dodaj(Predavac);
-    if (odgovor.ok) {
+    const odgovor = await Service.dodaj('Predavac',Predavac);
+    if(odgovor.ok){
       navigate(RoutesNames.PREDAVACI_PREGLED);
-    } else {
-      alert(odgovor.poruka.errors);
+      return
     }
+    prikaziError(odgovor.podaci);
   }
 
   function handleSubmit(e) {
@@ -33,73 +37,14 @@ export default function PredavaciDodaj() {
   }
 
   return (
-    <Container className='mt-4'>
+    <Container>
       <Form onSubmit={handleSubmit}>
-        <Form.Group className='mb-3' controlId='ime'>
-          <Form.Label>Ime</Form.Label>
-          <Form.Control
-            type='text'
-            name='ime'
-            placeholder='Ime Predavaca'
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='prezime'>
-          <Form.Label>Prezime</Form.Label>
-          <Form.Control
-            type='text'
-            name='prezime'
-            placeholder='Prezime Predavaca'
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='oib'>
-          <Form.Label>OIB</Form.Label>
-          <Form.Control
-            type='text'
-            name='oib'
-            placeholder='OIB Predavaca'
-            maxLength={11}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='email'>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type='email'
-            name='email'
-            placeholder='Email Predavaca'
-            maxLength={255}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='iban'>
-          <Form.Label>IBAN</Form.Label>
-          <Form.Control
-            type='text'
-            name='iban'
-            placeholder='IBAN Predavaca'
-          />
-        </Form.Group>
-
-       
-
-        <Row>
-          <Col>
-            <Link className='btn btn-danger gumb' to={RoutesNames.PREDAVACI_PREGLED}>
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button variant='primary' className='gumb' type='submit'>
-              Dodaj Predavača
-            </Button>
-          </Col>
-        </Row>
+        <InputText atribut='ime' vrijednost='' />
+        <InputText atribut='prezime' vrijednost='' />
+        <InputText atribut='oib' vrijednost='' />
+        <InputText atribut='email' vrijednost='' />
+        <InputText atribut='iban' vrijednost='' />
+        <Akcije odustani={RoutesNames.PREDAVACI_PREGLED} akcija='Dodaj predavača' />       
       </Form>
     </Container>
   );

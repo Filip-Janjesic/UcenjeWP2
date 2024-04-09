@@ -2,11 +2,12 @@ import { Route, Routes } from "react-router-dom"
 import Pocetna from "./pages/Pocetna"
 import { RoutesNames } from "./constants"
 import NavBar from "./components/NavBar"
-import Smjerovi from "./pages/smjerovi/Smjerovi"
+
 
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
+import Smjerovi from "./pages/smjerovi/Smjerovi"
 import SmjeroviDodaj from "./pages/smjerovi/SmjeroviDodaj"
 import SmjeroviPromjeni from "./pages/smjerovi/SmjeroviPromjeni"
 
@@ -22,14 +23,29 @@ import Grupe from "./pages/grupe/Grupe"
 import GrupeDodaj from "./pages/grupe/GrupeDodaj"
 import GrupePromjeni from "./pages/grupe/GrupePromjeni"
 
+import ErrorModal from './components/ErrorModal';
+import useError from "./hooks/useError"
+import Oznake from "./pages/oznake/Oznake"
+import LoadingSpinner from "./components/LoadingSpinner"
+import Login from "./pages/Login"
+import useAuth from "./hooks/useAuth"
+import NadzornaPloca from "./pages/NadzornaPloca"
+
 function App() {
+  const { errors, prikaziErrorModal, sakrijError } = useError();
+  const { isLoggedIn } = useAuth();
   return (
     <>
+      <LoadingSpinner />
+      <ErrorModal show={prikaziErrorModal} errors={errors} onHide={sakrijError} />
       <NavBar />
       <Routes>
+      <Route path={RoutesNames.HOME} element={<Pocetna />} />
+      {isLoggedIn ? (
         <>
-          <Route path={RoutesNames.HOME} element={<Pocetna />} />
-
+          
+          <Route path={RoutesNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
+          <Route path={RoutesNames.OZNAKE_PREGLED} element={<Oznake />} />
           
           <Route path={RoutesNames.SMJEROVI_PREGLED} element={<Smjerovi />} />
           <Route path={RoutesNames.SMJEROVI_NOVI} element={<SmjeroviDodaj />} />
@@ -48,6 +64,11 @@ function App() {
           <Route path={RoutesNames.GRUPE_NOVI} element={<GrupeDodaj />} />
           <Route path={RoutesNames.GRUPE_PROMJENI} element={<GrupePromjeni />} />
         </>
+        ) : (
+          <>
+            <Route path={RoutesNames.LOGIN} element={<Login />} />
+          </>
+        )}
       </Routes>
     </>
   )

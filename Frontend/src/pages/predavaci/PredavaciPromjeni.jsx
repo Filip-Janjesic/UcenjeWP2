@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import PredavacService from '../../services/PredavacService';
+import { Container, Form } from 'react-bootstrap';
+import { useNavigate, useParams } from 'react-router-dom';
+import Service from '../../services/PredavacService';
 import { RoutesNames } from '../../constants';
+import useError from '../../hooks/useError';
+import InputText from '../../components/InputText';
+import Akcije from '../../components/Akcije';
 
 export default function PredavaciPromjeni() {
   const [predavac, setPredavac] = useState({});
@@ -10,37 +13,35 @@ export default function PredavaciPromjeni() {
   const routeParams = useParams();
   const navigate = useNavigate();
 
+  const { prikaziError } = useError();
+
 
   async function dohvatiPredavac() {
+    const odgovor = await Service.getBySifra('Predavac',routeParams.sifra);
+    if(!odgovor.ok){
+      prikaziError(odgovor.podaci);
+      return;
+    }
+    setPredavac(odgovor.podaci);
+  }
 
-    await PredavacService
-      .getBySifra(routeParams.sifra)
-      .then((response) => {
-        console.log(response);
-        setPredavac(response.data);
-      })
-      .catch((err) => alert(err.poruka));
-
+  async function promjeniPredavac(predavac) {
+    const odgovor = await Service.promjeni('Predavac',routeParams.sifra, predavac);
+    if(odgovor.ok){
+      navigate(RoutesNames.PREDAVACI_PREGLED);
+      return;
+    }
+    prikaziError(odgovor.podaci);
   }
 
   useEffect(() => {
     dohvatiPredavac();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function promjeniPredavac(predavac) {
-    const odgovor = await PredavacService.promjeni(routeParams.sifra, predavac);
-
-    if (odgovor.ok) {
-      navigate(RoutesNames.PREDAVACI_PREGLED);
-    } else {
-      alert(odgovor.poruka);
-
-    }
-  }
-
+  
   function handleSubmit(e) {
     e.preventDefault();
-
     const podaci = new FormData(e.target);
     promjeniPredavac({
       ime: podaci.get('ime'),
@@ -52,72 +53,14 @@ export default function PredavaciPromjeni() {
   }
 
   return (
-    <Container className='mt-4'>
+    <Container>
       <Form onSubmit={handleSubmit}>
-
-      <Form.Group className='mb-3' controlId='ime'>
-          <Form.Label>Ime</Form.Label>
-          <Form.Control
-            type='text'
-            name='ime'
-            defaultValue={predavac.ime}
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='prezime'>
-          <Form.Label>Prezime</Form.Label>
-          <Form.Control
-            type='text'
-            name='prezime'
-            defaultValue={predavac.prezime}
-            maxLength={255}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='oib'>
-          <Form.Label>OIB</Form.Label>
-          <Form.Control
-            type='text'
-            name='oib'
-            defaultValue={predavac.oib}
-            maxLength={11}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='email'>
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            type='email'
-            name='email'
-            defaultValue={predavac.email}
-            maxLength={255}
-          />
-        </Form.Group>
-
-        <Form.Group className='mb-3' controlId='iban'>
-          <Form.Label>IBAN</Form.Label>
-          <Form.Control
-            type='text'
-            name='iban'
-            defaultValue={predavac.iban}
-          />
-        </Form.Group>
-
-        <Row>
-          <Col>
-            <Link className='btn btn-danger gumb' to={RoutesNames.PREDAVACI_PREGLED}>
-              Odustani
-            </Link>
-          </Col>
-          <Col>
-            <Button variant='primary' className='gumb' type='submit'>
-              Promjeni predavača
-            </Button>
-          </Col>
-        </Row>
+        <InputText atribut='ime' vrijednost={predavac.ime} />
+        <InputText atribut='prezime' vrijednost={predavac.prezime} />
+        <InputText atribut='oib' vrijednost={predavac.oib} />
+        <InputText atribut='email' vrijednost={predavac.email} />
+        <InputText atribut='iban' vrijednost={predavac.iban} />
+        <Akcije odustani={RoutesNames.PREDAVACI_PREGLED} akcija='Promjeni predavača' />
       </Form>
     </Container>
   );

@@ -28,6 +28,12 @@ namespace EdunovaAPP.Data
 
         public DbSet<Grupa> Grupe { get; set; }
 
+        public DbSet<Oznaka> Oznake { get; set; }
+
+        public DbSet<SmjerOznaka> SmjeroviOznake { get; set; }
+
+        public DbSet<Operater> Operateri { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -44,6 +50,9 @@ namespace EdunovaAPP.Data
                 c => c.HasOne<Grupa>().WithMany().HasForeignKey("grupa"),
                 c => c.ToTable("clanovi")
                 );
+
+            modelBuilder.Entity<SmjerOznaka>().HasOne(x => x.Smjer);
+            modelBuilder.Entity<SmjerOznaka>().HasOne(x => x.Oznaka);
 
         }
     }

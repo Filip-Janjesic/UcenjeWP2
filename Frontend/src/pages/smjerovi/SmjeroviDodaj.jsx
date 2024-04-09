@@ -1,105 +1,52 @@
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Container, Form } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { RoutesNames } from "../../constants";
-import SmjerService from "../../services/SmjerService";
+import Service from "../../services/SmjerService";
+import useError from '../../hooks/useError';
+import InputText from "../../components/InputText";
+import InputCheckbox from "../../components/InputCheckbox";
+import Akcije from "../../components/Akcije";
+import useLoading from "../../hooks/useLoading";
 
 export default function SmjeroviDodaj(){
     const navigate = useNavigate();
-
+    const { prikaziError } = useError();
+    const { showLoading, hideLoading } = useLoading();
 
     async function dodajSmjer(smjer){
-        const odgovor = await SmjerService.dodajSmjer(smjer);
+        showLoading();
+        const odgovor = await Service.dodaj('Smjer',smjer);
         if(odgovor.ok){
           navigate(RoutesNames.SMJEROVI_PREGLED);
-        }else{
-          console.log(odgovor);
-          alert(odgovor.poruka);
+          return
         }
+        prikaziError(odgovor.podaci);
+        hideLoading();
     }
 
     function handleSubmit(e){
         e.preventDefault();
         const podaci = new FormData(e.target);
-        //console.log(podaci.get('naziv'));
-
-        const smjer = 
-        {
+        dodajSmjer({
             naziv: podaci.get('naziv'),
             trajanje: parseInt(podaci.get('trajanje')),
             cijena: parseFloat(podaci.get('cijena')),
             upisnina: parseFloat(podaci.get('upisnina')),
             verificiran: podaci.get('verificiran')=='on' ? true: false
-          };
-
-          //console.log(JSON.stringify(smjer));
-          dodajSmjer(smjer);
-
-
+        });
     }
 
     return (
 
         <Container>
-           
            <Form onSubmit={handleSubmit}>
-
-                <Form.Group controlId="naziv">
-                    <Form.Label>Naziv</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="naziv"
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="trajanje">
-                    <Form.Label>Trajanje</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="trajanje"
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="cijena">
-                    <Form.Label>Cijena</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="cijena"
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="upisnina">
-                    <Form.Label>Upisnina</Form.Label>
-                    <Form.Control 
-                        type="text"
-                        name="upisnina"
-                    />
-                </Form.Group>
-
-                <Form.Group controlId="verificiran">
-                    <Form.Check 
-                        label="Verificiran"
-                        name="verificiran"
-                    />
-                </Form.Group>
-
-                <Row className="akcije">
-                    <Col>
-                        <Link 
-                        className="btn btn-danger"
-                        to={RoutesNames.SMJEROVI_PREGLED}>Odustani</Link>
-                    </Col>
-                    <Col>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                        >
-                            Dodaj smjer
-                        </Button>
-                    </Col>
-                </Row>
-                
+                <InputText atribut='naziv' vrijednost='' />
+                <InputText atribut='trajanje' vrijednost='' />
+                <InputText atribut='cijena' vrijednost='' />
+                <InputText atribut='upisnina' vrijednost='' />
+                <InputCheckbox atribut='verificiran' vrijednost={false} />
+                <Akcije odustani={RoutesNames.SMJEROVI_PREGLED} akcija='Dodaj smjer' />
            </Form>
-
         </Container>
 
     );
