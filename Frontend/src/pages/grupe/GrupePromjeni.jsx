@@ -190,7 +190,7 @@ export default function GrupePromjeni() {
       ime: niz[0],
       prezime: niz[1],
       oib: '',
-      email: '',
+      email: 'pero@pero.com',
       brojugovora: ''
     });
 
